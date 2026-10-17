@@ -1,0 +1,22 @@
+<view class="page chat-page">
+  <view class="intro card">
+    <view class="intro-title">问我任何旅行问题</view>
+    <view class="muted">例如：杭州两天怎么玩？西湖附近有什么适合亲子的路线？</view>
+  </view>
+
+  <scroll-view class="messages" scroll-y="true" scroll-into-view="{{scrollTo}}">
+    <view tt:for="{{messages}}" tt:key="id" id="{{item.id}}" class="msg {{item.role}}">
+      <view class="msg-bubble">{{item.content}}</view>
+    </view>
+  </scroll-view>
+
+  <view class="quick-row">
+    <button class="ghost-btn quick" data-text="杭州两天一晚怎么安排？" bindtap="useQuick">杭州两天</button>
+    <button class="ghost-btn quick" data-text="推荐一个适合亲子的文旅路线" bindtap="useQuick">亲子路线</button>
+  </view>
+
+  <view class="composer card">
+    <textarea class="textarea" value="{{message}}" maxlength="300" placeholder="输入你的问题..." bindinput="onMessageInput" />
+    <button class="primary-btn" loading="{{loading}}" bindtap="sendMessage">发送</button>
+  </view>
+</view>

@@ -1,0 +1,258 @@
+var S={provider:'deepseek',model:'deepseek-chat',apiKey:'',convId:crypto.randomUUID(),streaming:false};
+var PM={deepseek:['deepseek-chat','deepseek-reasoner'],zhipu:['glm-4-plus','glm-4-flash'],qwen:['qwen-max','qwen-plus'],moonshot:['moonshot-v1-8k','moonshot-v1-32k']};
+var map2=null,mapPos=null,mapMarker=null;
+var JS_KEY='c022c28ed90dec336e7d594bd754b354',WEB_KEY='54e9d92fa8802dfbd8aacbbeb1affec6';
+
+function init(){
+  var s=localStorage.getItem('smarttourism_mobile');
+  if(s){try{var c=JSON.parse(s);S.provider=c.provider||'deepseek';S.model=c.model||'deepseek-chat';S.apiKey=c.apiKey||''}catch(e){}}
+  document.getElementById('sProvider').value=S.provider;updateModelM();
+  document.getElementById('sModel').value=S.model;
+  if(S.apiKey)document.getElementById('sApiKey').value=S.apiKey;
+  checkConn();
+}
+
+function updateModelM(){
+  var m=PM[S.provider]||['default'];
+  document.getElementById('sModel').innerHTML=m.map(function(x){return'<option value="'+x+'"'+(x===S.model?' selected':'')+'>'+x+'</option>'}).join('');
+}
+function onProviderChangeM(){S.provider=document.getElementById('sProvider').value;S.model=PM[S.provider][0];updateModelM();}
+
+function switchTab(t){
+  document.getElementById('chatPage').classList.toggle('hidden',t!=='chat');
+  document.getElementById('mapPage').classList.toggle('hidden',t!=='map');
+  document.getElementById('settingsPage').classList.toggle('hidden',t!=='settings');
+  ['chat','map','settings'].forEach(function(x){document.getElementById('tab'+x.charAt(0).toUpperCase()+x.slice(1)).classList.toggle('active',t===x)});
+  if(t==='map'){if(!map2)initMap();else setTimeout(function(){map2.resize()},200)}
+}
+
+function checkConn(){
+  fetch('/api/health').then(function(r){return r.json()}).then(function(d){
+    document.getElementById('connInfo').innerHTML='✅ 服务运行中 v'+d.version+'<br>🧠 '+d.skills_loaded.length+' Skills | 🔌 '+d.plugins_configured+'/'+d.plugins_loaded+' 插件<br>🌐 '+window.location.host;
+  }).catch(function(){document.getElementById('connInfo').innerHTML='⚠️ 未连接后端'});
+}
+
+function saveSettings(){
+  S.provider=document.getElementById('sProvider').value;
+  S.model=document.getElementById('sModel').value;
+  S.apiKey=document.getElementById('sApiKey').value.trim();
+  if(!S.apiKey){toast('请输入 API Key');return}
+  var c={provider:S.provider,model:S.model,api_key:S.apiKey};
+  localStorage.setItem('smarttourism_mobile',JSON.stringify(c));
+  fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(c)})
+    .then(function(r){return r.json()}).then(function(d){
+      if(d.success)toast('✅ 配置已保存');else toast(d.error||'失败')
+    }).catch(function(){toast('已本地保存')});
+}
+
+function sendMsg(){
+  if(S.streaming)return;
+  var input=document.getElementById('inputM'),msg=input.value.trim();
+  if(!msg)return;
+  if(!S.apiKey){toast('请先在设置中配置 API Key');switchTab('settings');return}
+  // 自动同步 Key 到后端（防止重启丢失）
+  fetch('/api/config',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({api_key:S.apiKey,provider:S.provider,model:S.model})}).catch(function(){})
+  var wel=document.getElementById('welcomeM');if(wel)wel.style.display='none';
+  addMsg('user',msg);input.value='';S.streaming=true;
+  var ty=addTyping();
+  fetch('/api/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:msg,conversation_id:S.convId,stream:true})})
+    .then(function(r){if(!r.ok)return r.json().then(function(e){throw new Error(e.error)});
+      var reader=r.body.getReader(),decoder=new TextDecoder();ty.remove();
+      var bubble=addMsg('assistant',''),bubbleDiv=bubble.querySelector('.bubble'),content='';
+      function read(){reader.read().then(function(result){
+        if(result.done){S.streaming=false;return}
+        var text=decoder.decode(result.value,{stream:true}),lines=text.split('\n');
+        for(var i=0;i<lines.length;i++){
+          if(!lines[i].startsWith('data: '))continue;
+          try{var j=JSON.parse(lines[i].slice(6));if(j.done){S.streaming=false;return}if(j.content){content+=j.content;bubbleDiv.innerHTML=md(content);scrollBtm()}}catch(e){}
+        }
+        read();
+      })}
+      read();
+    }).catch(function(e){ty&&ty.remove();addMsg('assistant','❌ '+e.message);S.streaming=false});
+}
+
+function addMsg(role,text){
+  var b=document.getElementById('chatBody'),d=document.createElement('div');
+  d.className='msg '+role;
+  d.innerHTML='<div class="avatar">'+(role==='user'?'👤':'🦉')+'</div><div class="bubble">'+md(text)+'</div>';
+  b.appendChild(d);scrollBtm();return d;
+}
+function addTyping(){
+  var b=document.getElementById('chatBody'),d=document.createElement('div');
+  d.className='msg assistant';
+  d.innerHTML='<div class="avatar">🦉</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div>';
+  b.appendChild(d);scrollBtm();return d;
+}
+function md(t){
+  if(!t)return'';
+  var html=t.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  // 清理分隔线符号
+  html=html.replace(/^[\s]*[-=*_~|]{3,}[\s]*$/gm,'');
+  // 清理表格残留
+  html=html.replace(/^\|.*\|$/gm,function(l){return l.replace(/^\|/,'').replace(/\|$/,'').replace(/\|/g,'  ·  ')});
+  // 标题
+  html=html.replace(/^### (.+)$/gm,'<h3>$1</h3>');
+  html=html.replace(/^## (.+)$/gm,'<h2>$1</h2>');
+  // 粗体和斜体
+  html=html.replace(/\*\*(.+?)\*\*/g,'<strong>$1</strong>');
+  html=html.replace(/(?<!\*)\*(?!\*)(.+?)(?<!\*)\*(?!\*)/g,'<em>$1</em>');
+  // 代码
+  html=html.replace(/```([^`]+)```/g,'<pre><code>$1</code></pre>');
+  html=html.replace(/`([^`]+)`/g,'<code>$1</code>');
+  // 按行处理列表
+  var lines=html.split('\n'),result=[],inUL=false,inOL=false;
+  for(var i=0;i<lines.length;i++){
+    var line=lines[i];
+    var ulM=line.match(/^(?:\s*)(?:-|\*|•)\s+(.+)/);
+    var olM=line.match(/^(?:\s*)(\d+)\.\s+(.+)/);
+    if(ulM){
+      if(inOL){result.push('</ol>');inOL=false;}
+      if(!inUL){result.push('<ul>');inUL=true;}
+      result.push('<li>'+ulM[1]+'</li>');
+    }else if(olM){
+      if(inUL){result.push('</ul>');inUL=false;}
+      if(!inOL){result.push('<ol>');inOL=true;}
+      result.push('<li>'+olM[2]+'</li>');
+    }else{
+      if(inUL){result.push('</ul>');inUL=false;}
+      if(inOL){result.push('</ol>');inOL=false;}
+      result.push(line);
+    }
+  }
+  if(inUL)result.push('</ul>');
+  if(inOL)result.push('</ol>');
+  html=result.join('\n');
+  html=html.replace(/\n\n+/g,'</p><p>');
+  html=html.replace(/\n/g,'<br>');
+  html=html.replace(/<p>\s*<\/p>/g,'');
+  return '<p>'+html+'</p>';
+}
+function scrollBtm(){var b=document.getElementById('chatBody');setTimeout(function(){b.scrollTop=b.scrollHeight},50)}
+function quickAsk(t){document.getElementById('inputM').value=t;sendMsg()}
+function clearChatM(){document.getElementById('chatBody').innerHTML='<div class="welcome" id="welcomeM"><div class="welcome-logo">🏞️</div><h2>对话已清空</h2><p>开始新对话</p></div>';S.convId=crypto.randomUUID()}
+
+function gpsLocateM(){
+  showLoading(true);
+  // 优先使用高德官方定位
+  if(typeof AMap!=='undefined'&&AMap.Geolocation){
+    var geo=new AMap.Geolocation({enableHighAccuracy:true,timeout:10000,maximumAge:0,noIpLocate:0,useNative:true,GeoLocationFirst:true});
+    geo.getCurrentPosition(function(status,res){
+      if(status==='complete'&&res.position){
+        var lng=res.position.lng,lat=res.position.lat;
+        var addr=res.formattedAddress||'';
+        if(addr){
+          showLoading(false);
+          document.getElementById('inputM').value='我当前在'+addr+'，附近有什么好玩的地方和好吃的';
+          sendMsg();
+        }else{
+          // 高德定位未返回地址，逆地理编码补充
+          fetch('https://restapi.amap.com/v3/geocode/regeo?key='+WEB_KEY+'&location='+lng+','+lat)
+            .then(function(r){return r.json()})
+            .then(function(d){
+              showLoading(false);
+              addr=(d.regeocode&&d.regeocode.formatted_address)||(lng.toFixed(4)+','+lat.toFixed(4));
+              document.getElementById('inputM').value='我当前在'+addr+'，附近有什么好玩的地方和好吃的';
+              sendMsg();
+            }).catch(function(){
+              showLoading(false);
+              document.getElementById('inputM').value='我当前在'+lng.toFixed(4)+','+lat.toFixed(4)+'，附近有什么好玩的地方和好吃的';
+              sendMsg();
+            });
+        }
+      }else{showLoading(false);toast('高德定位失败，尝试GPS');gpsLocateFallback()}
+    });
+  }else{gpsLocateFallback()}
+}
+function gpsLocateFallback(){
+  if(!navigator.geolocation){toast('浏览器不支持GPS');return}
+  showLoading(true);
+  navigator.geolocation.getCurrentPosition(function(pos){
+    var lng=pos.coords.longitude,lat=pos.coords.latitude;
+    fetch('https://restapi.amap.com/v3/geocode/regeo?key='+WEB_KEY+'&location='+lng+','+lat)
+      .then(function(r){return r.json()})
+      .then(function(d){
+        showLoading(false);
+        var addr=(d.regeocode&&d.regeocode.formatted_address)||(lng.toFixed(4)+','+lat.toFixed(4));
+        document.getElementById('inputM').value='我当前在'+addr+'，附近有什么好玩的地方和好吃的';
+        sendMsg();
+      }).catch(function(){showLoading(false)});
+  },function(){showLoading(false);toast('定位失败')},{enableHighAccuracy:true,timeout:10000});
+}
+
+// ====== 地图 ======
+function initMap(){
+  var s=document.createElement('script');
+  s.src='https://webapi.amap.com/maps?v=2.0&key='+JS_KEY+'&plugin=AMap.Geolocation,AMap.Geocoder';
+  s.onload=function(){map2=new AMap.Map('mapContainer2',{zoom:15,center:[120.658,28.012],resizeEnable:true});relocateMap()};
+  s.onerror=function(){document.getElementById('mapContainer2').innerHTML='<div style="display:flex;align-items:center;justify-content:center;height:100%;color:#999;">地图加载失败</div>'};
+  document.head.appendChild(s);
+}
+function relocateMap(){
+  if(!map2){initMap();return}showLoading(true);
+  // 优先使用高德官方定位
+  if(typeof AMap!=='undefined'&&AMap.Geolocation){
+    var geo=new AMap.Geolocation({enableHighAccuracy:true,timeout:10000,maximumAge:0,noIpLocate:0,useNative:true,GeoLocationFirst:true});
+    geo.getCurrentPosition(function(status,res){
+      if(status==='complete'&&res.position){
+        mapPos={lng:res.position.lng,lat:res.position.lat};
+        setMapCenter(mapPos.lng,mapPos.lat);reverseGeo(mapPos.lng,mapPos.lat);
+        showLoading(false);setTimeout(function(){searchMap()},500);
+      }else{showLoading(false);relocateFallback()}
+    });
+  }else{relocateFallback()}
+}
+function relocateFallback(){
+  if(!navigator.geolocation){showLoading(false);ipLocateMap();return}
+  showLoading(true);
+  navigator.geolocation.getCurrentPosition(function(pos){
+    mapPos={lng:pos.coords.longitude,lat:pos.coords.latitude};
+    setMapCenter(mapPos.lng,mapPos.lat);reverseGeo(mapPos.lng,mapPos.lat);
+    showLoading(false);setTimeout(function(){searchMap()},500);
+  },function(){showLoading(false);ipLocateMap()},{enableHighAccuracy:true,timeout:10000});
+}
+function ipLocateMap(){
+  fetch('https://restapi.amap.com/v3/ip?key='+WEB_KEY).then(function(r){return r.json()}).then(function(d){
+    if(d.status==='1'){var rect=d.rectangle.split(';')[0].split(',');mapPos={lng:(parseFloat(rect[0])+parseFloat(rect[2]))/2,lat:(parseFloat(rect[1])+parseFloat(rect[3]))/2};setMapCenter(mapPos.lng,mapPos.lat);document.getElementById('mapAddrText').textContent=d.city||d.province;document.getElementById('mapAddrBar').style.display='flex';searchMap()}
+  });
+}
+function setMapCenter(lng,lat){
+  if(!map2)return;map2.setCenter([lng,lat]);map2.setZoom(15);
+  if(mapMarker)mapMarker.setMap(null);
+  mapMarker=new AMap.Marker({position:[lng,lat],map:map2,title:'我的位置',draggable:true,icon:new AMap.Icon({size:new AMap.Size(30,42),image:'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png',imageSize:new AMap.Size(30,42)}),anchor:'bottom-center',zIndex:100});
+  mapMarker.on('dragend',function(e){var p=e.target.getPosition();mapPos.lng=p.getLng();mapPos.lat=p.getLat();reverseGeo(p.getLng(),p.getLat());setTimeout(function(){searchMap()},300)});
+}
+function reverseGeo(lng,lat){
+  fetch('https://restapi.amap.com/v3/geocode/regeo?key='+WEB_KEY+'&location='+lng+','+lat).then(function(r){return r.json()}).then(function(d){
+    if(d.status==='1'&&d.regeocode){document.getElementById('mapAddrText').textContent=d.regeocode.formatted_address;document.getElementById('mapAddrBar').style.display='flex'}
+  });
+}
+function searchMap(){
+  if(!mapPos){toast('请先定位');return}
+  var kw=document.getElementById('mapSearchInput').value.trim()||document.getElementById('mapSearchType').value;
+  showLoading(true);
+  fetch('https://restapi.amap.com/v3/place/around?key='+WEB_KEY+'&location='+mapPos.lng+','+mapPos.lat+'&keywords='+encodeURIComponent(kw)+'&radius=5000&offset=15&extensions=all')
+    .then(function(r){return r.json()}).then(function(d){
+      showLoading(false);
+      if(d.status==='1'&&d.pois){renderMapResults(d.pois,kw)}
+    }).catch(function(){showLoading(false)});
+}
+function renderMapResults(pois,kw){
+  document.getElementById('mapPanelTitle').textContent=kw+' 周边 ('+pois.length+')';
+  var list=document.getElementById('mapPanelList');list.innerHTML='';
+  (map2._markers||[]).forEach(function(m){m.setMap(null)});map2._markers=[];
+  pois.forEach(function(p,i){
+    var div=document.createElement('div');div.className='map-item';
+    div.innerHTML='<span class="idx">'+(i+1)+'</span><div class="info"><div class="name">'+p.name+(p.biz_ext&&p.biz_ext.rating?' ⭐'+p.biz_ext.rating:'')+'</div><div class="addr">'+(p.distance?p.distance+'m | ':'')+p.address+'</div></div>';
+    div.onclick=function(){var loc=p.location.split(',');map2.setCenter([parseFloat(loc[0]),parseFloat(loc[1])]);map2.setZoom(17)};
+    list.appendChild(div);
+    var loc=p.location.split(','),mk=new AMap.Marker({position:[parseFloat(loc[0]),parseFloat(loc[1])],map:map2,title:p.name,label:{content:''+(i+1),offset:new AMap.Pixel(-8,-10)}});
+    map2._markers.push(mk);
+  });
+  document.getElementById('mapPanel').classList.add('show');
+}
+function closeMapPanel(){document.getElementById('mapPanel').classList.remove('show')}
+
+function toast(msg){var t=document.createElement('div');t.className='toast';t.textContent=msg;document.body.appendChild(t);setTimeout(function(){t.remove()},2500)}
+function showLoading(s){document.getElementById('loadingOverlay').classList.toggle('show',s)}
+window.onload=init;

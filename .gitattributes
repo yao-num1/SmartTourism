@@ -1,0 +1,10 @@
+# 批处理脚本必须用 CRLF，否则 cmd.exe 解析错乱（setlocal→tlocal、start/goto 失效）
+*.bat text eol=crlf
+*.cmd text eol=crlf
+*.ps1 text eol=crlf
+
+# Shell 脚本用 LF
+*.sh text eol=lf
+
+# Python 源码统一 LF（跨平台一致）
+*.py text eol=lf

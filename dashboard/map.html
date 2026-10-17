@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>智旅灵犀 · 地图导航</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%;overflow:hidden}
+#mapContainer{width:100%;height:100%}
+
+/* 控件 */
+.controls{position:absolute;top:10px;left:10px;right:10px;z-index:100;display:flex;gap:6px}
+.controls input{flex:1;padding:8px 12px;border:none;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);font-size:14px;outline:none}
+.controls select,.controls button{padding:8px 14px;border:none;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.2);background:#fff;font-size:13px;cursor:pointer;white-space:nowrap}
+.controls button{background:#2d5a27;color:#fff}
+.controls button:hover{background:#1a3a18}
+.controls button.orange{background:#e07b3c}
+
+.panel{position:absolute;bottom:0;left:0;right:0;z-index:100;background:#fff;border-radius:16px 16px 0 0;box-shadow:0 -2px 16px rgba(0,0,0,0.15);max-height:50vh;overflow-y:auto;display:none;padding:12px 0}
+.panel.show{display:block}
+.panel h3{padding:0 16px 10px;font-size:14px;border-bottom:1px solid #eee;margin-bottom:6px;display:flex;justify-content:space-between;align-items:center}
+.panel h3 .close-btn{background:none;border:none;font-size:20px;cursor:pointer;color:#999;padding:0 4px;line-height:1}
+.panel h3 .close-btn:hover{color:#333}
+.panel .item{display:flex;align-items:center;gap:10px;padding:10px 16px;cursor:pointer;font-size:13px;border-bottom:1px solid #f5f5f5}
+.panel .item:hover{background:#f8f8f8}
+.panel .item .num{width:24px;height:24px;border-radius:50%;background:#2d5a27;color:#fff;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:600;flex-shrink:0}
+.panel .item .info{flex:1;min-width:0}
+.panel .item .info .name{font-weight:500}
+.panel .item .info .addr{font-size:11px;color:#999;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.panel .item .nav-btn{padding:5px 12px;border-radius:12px;border:none;background:#2d5a27;color:#fff;font-size:11px;cursor:pointer;white-space:nowrap;flex-shrink:0}
+
+.route-box{position:absolute;top:60px;left:10px;right:10px;z-index:99;background:#fff;padding:12px;border-radius:12px;box-shadow:0 4px 16px rgba(0,0,0,0.15);display:none}
+.route-box.show{display:block}
+.route-box .row:first-child{display:flex;justify-content:space-between;align-items:center}
+.route-box .row:first-child .title{font-weight:600;font-size:13px}
+.route-box .row:first-child .close-btn{background:none;border:none;font-size:18px;cursor:pointer;color:#999}
+.route-box .row select,.route-box .row input{padding:6px 10px;border:1px solid #ddd;border-radius:6px;font-size:12px}
+.route-box .row input{flex:1}
+.route-box .result{padding:8px;background:#e8f5e8;border-radius:6px;font-size:12px;line-height:1.8;display:none;max-height:120px;overflow-y:auto}
+.route-box .result.show{display:block}
+
+.toast{position:fixed;top:60px;left:50%;transform:translateX(-50%);z-index:999;background:#333;color:#fff;padding:8px 20px;border-radius:20px;font-size:13px}
+.loading{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:999;background:rgba(0,0,0,0.7);color:#fff;padding:10px 20px;border-radius:20px;display:none}
+.loading.show{display:block}
+</style>
+</head>
+<body>
+
+<div id="mapContainer"></div>
+
+<div class="controls" id="controls">
+    <select id="searchType">
+        <option value="景点">🏛️ 景点</option>
+        <option value="酒店">🏨 酒店</option>
+        <option value="餐饮">🍜 餐饮</option>
+    </select>
+    <input id="searchInput" placeholder="搜索周边..." onkeydown="if(event.key==='Enter')doSearch()">
+    <button onclick="doSearch()">🔍</button>
+    <button class="orange" onclick="gpsLocate()">📍 定位</button>
+</div>
+
+<div class="route-box" id="routeBox">
+    <div class="row" style="margin-bottom:10px;">
+        <span class="title">🧭 路线规划</span>
+        <button class="close-btn" onclick="closeRoute()">×</button>
+    </div>
+    <div class="row">
+        <input id="routeFrom" placeholder="起点（自动获取当前位置）" readonly>
+    </div>
+    <div class="row">
+        <input id="routeTo" placeholder="终点名称">
+        <button onclick="planRoute()" style="background:#2d5a27;color:#fff;padding:6px 12px;border:none;border-radius:6px;">🧭 导航</button>
+    </div>
+    <div class="row">
+        <select id="routeMode">
+            <option value="driving">🚗 驾车</option>
+            <option value="walking">🚶 步行</option>
+            <option value="transit">🚌 公交</option>
+        </select>
+        <a id="amapLink" href="#" target="_blank" style="font-size:12px;color:#2d5a27;text-decoration:none;margin-left:auto;display:none;">📱 打开高德导航 →</a>
+    </div>
+    <div class="result" id="routeResult"></div>
+</div>
+
+<div class="panel" id="resultPanel">
+    <h3 id="panelTitle">搜索结果</h3>
+    <div id="panelList"></div>
+</div>
+
+<div class="loading" id="loading">加载中...</div>
+
+<div id="locBar" style="position:absolute;top:50px;left:10px;right:10px;z-index:98;background:rgba(255,255,255,0.95);padding:8px 14px;border-radius:20px;box-shadow:0 2px 8px rgba(0,0,0,0.15);font-size:12px;display:none;align-items:center;gap:8px;">
+  <span>📍</span>
+  <span id="locAddr" style="flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">正在定位...</span>
+  <span id="locAcc" style="color:#999;white-space:nowrap;"></span>
+  <button onclick="gpsLocate()" style="background:#2d5a27;color:#fff;border:none;padding:4px 12px;border-radius:12px;font-size:11px;cursor:pointer;">重新定位</button>
+</div>
+
+<script>
+// ===== 常量 =====
+// 高德 Key 不内置于前端（敏感信息保护），启动时从后端 /api/map/key 读取
+let JS_KEY = '';
+let WEB_KEY = '';
+
+// ===== 全局状态 =====
+var map = null;
+var currentPos = null;
+var currentMarker = null;
+var markers = [];
+var routeLine = null;
+
+// 默认中心（温州），定位全部失败时的兜底
+var DEFAULT_CENTER = { lng: 120.658, lat: 28.012 };
+
+// 校验经纬度是否为有效数字（防止 GPS 返回 null 导致地图中心变 NaN 而空白）
+function validLL(lng, lat) {
+    return typeof lng === 'number' && isFinite(lng) && lng >= -180 && lng <= 180 &&
+           typeof lat === 'number' && isFinite(lat) && lat >= -90 && lat <= 90;
+}
+
+// ===== 初始化 =====
+function init() {
+    var s = document.createElement('script');
+    s.src = 'https://webapi.amap.com/maps?v=2.0&key=' + JS_KEY;
+    s.onload = function() {
+        try {
+            map = new AMap.Map('mapContainer', {
+                zoom: 15,
+                center: [120.658, 28.012],
+                resizeEnable: true
+            });
+            toast('正在获取你的实时位置...');
+            // 立即定位到用户位置
+            tryGeoFirst();
+        } catch(e) {
+            showError('地图初始化失败: ' + e.message);
+        }
+    };
+    s.onerror = function() {
+        showError('高德地图加载失败，请检查 JS Key 是否正确');
+    };
+    document.head.appendChild(s);
+}
+
+// 优先尝试定位，失败后用 IP
+function tryGeoFirst() {
+    if (!navigator.geolocation) {
+        ipLocateFallback();
+        return;
+    }
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        var lng = pos.coords.longitude, lat = pos.coords.latitude;
+        // 部分浏览器/系统定位服务会"成功"但返回空坐标，必须校验，否则地图中心变 NaN 直接空白
+        if (!validLL(lng, lat)) { ipLocateFallback(); return; }
+        currentPos = { lng: lng, lat: lat };
+        setMapCenter(currentPos.lng, currentPos.lat);
+        document.getElementById('routeFrom').value = currentPos.lng.toFixed(6) + ',' + currentPos.lat.toFixed(6);
+        reverseGeo(currentPos.lng, currentPos.lat);
+        setTimeout(function() { doSearch(); }, 500);
+    }, function() {
+        ipLocateFallback();
+    }, { enableHighAccuracy: true, timeout: 10000, maximumAge: 60000 });
+}
+
+function ipLocateFallback() {
+    fetch('https://restapi.amap.com/v3/ip?key=' + WEB_KEY)
+        .then(r => r.json())
+        .then(d => {
+            if (d.status === '1' && d.rectangle) {
+                var rect = d.rectangle.split(';')[0].split(',');
+                var lng = (parseFloat(rect[0]) + parseFloat(rect[2])) / 2;
+                var lat = (parseFloat(rect[1]) + parseFloat(rect[3])) / 2;
+                if (!validLL(lng, lat)) { useDefaultCenter(); return; }
+                currentPos = { lng: lng, lat: lat };
+                setMapCenter(lng, lat);
+                document.getElementById('routeFrom').value = d.city || d.province;
+                toast('📍 ' + (d.city || d.province) + ' (IP定位)');
+                doSearch();
+            } else {
+                useDefaultCenter();
+            }
+        })
+        .catch(function() { useDefaultCenter(); });
+}
+
+// 定位全部失败时显示默认城市，保证地图永远可用
+function useDefaultCenter() {
+    currentPos = { lng: DEFAULT_CENTER.lng, lat: DEFAULT_CENTER.lat };
+    setMapCenter(currentPos.lng, currentPos.lat);
+    document.getElementById('routeFrom').value = '温州市';
+    toast('📍 定位失败，已显示默认城市（温州）');
+    doSearch();
+}
+
+function reverseGeo(lng, lat) {
+    document.getElementById('locBar').style.display = 'flex';
+    document.getElementById('locAddr').textContent = '正在获取地址...';
+    document.getElementById('locAcc').textContent = '(GPS ±' + (currentPos && currentPos.accuracy ? Math.round(currentPos.accuracy) + 'm' : '?') + ')';
+    
+    fetch('https://restapi.amap.com/v3/geocode/regeo?key=' + WEB_KEY + '&location=' + lng + ',' + lat)
+        .then(r => r.json())
+        .then(d => {
+            if (d.status === '1' && d.regeocode) {
+                var addr = d.regeocode.formatted_address;
+                document.getElementById('locAddr').textContent = addr;
+                document.getElementById('routeFrom').value = addr;
+                document.getElementById('locBar').style.display = 'flex';
+                var acc = '';
+                if (currentPos && currentPos.accuracy) acc = ' (GPS ±' + Math.round(currentPos.accuracy) + 'm)';
+                document.getElementById('locAcc').textContent = acc;
+            }
+        });
+}
+
+function showError(msg) {
+    document.getElementById('mapContainer').innerHTML =
+        '<div style="display:flex;align-items:center;justify-content:center;height:100%;flex-direction:column;gap:10px;color:#c00;font-size:16px;">' +
+        '<div style="font-size:48px;">🗺️</div>' +
+        '<div>' + msg + '</div>' +
+        '<div style="font-size:12px;color:#999;">JS Key: ' + JS_KEY.substring(0,6) + '...</div>' +
+        '<button onclick="location.reload()" style="padding:8px 20px;border:none;background:#2d5a27;color:#fff;border-radius:20px;cursor:pointer;">刷新重试</button>' +
+        '</div>';
+}
+
+// ===== GPS 定位 =====
+function gpsLocate() {
+    showLoading(true);
+    if (!navigator.geolocation) { showLoading(false); toast('浏览器不支持GPS'); return; }
+
+    navigator.geolocation.getCurrentPosition(function(pos) {
+        var lng = pos.coords.longitude, lat = pos.coords.latitude;
+        if (!validLL(lng, lat)) { showLoading(false); ipLocateFallback(); return; }
+        currentPos = { lng: lng, lat: lat, accuracy: pos.coords.accuracy };
+        setMapCenter(currentPos.lng, currentPos.lat);
+        document.getElementById('routeFrom').value = currentPos.lng.toFixed(6) + ',' + currentPos.lat.toFixed(6);
+        reverseGeo(currentPos.lng, currentPos.lat);
+        showLoading(false);
+        doSearch();
+    }, function(err) {
+        showLoading(false);
+        ipLocateFallback();
+    }, { enableHighAccuracy: true, timeout: 10000 });
+}
+
+function setMapCenter(lng, lat) {
+    if (!map || !validLL(lng, lat)) return;
+    map.setCenter([lng, lat]);
+    map.setZoom(15);
+    if (currentMarker) currentMarker.setMap(null);
+    // 红色大头针标记（可拖动微调）
+    currentMarker = new AMap.Marker({
+        position: [lng, lat],
+        map: map,
+        title: '我的位置（长按拖动微调）',
+        draggable: true,
+        icon: new AMap.Icon({
+            size: new AMap.Size(36, 50),
+            image: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_r.png',
+            imageSize: new AMap.Size(36, 50),
+        }),
+        anchor: 'bottom-center',
+        zIndex: 100
+    });
+    // 拖动结束后更新坐标
+    currentMarker.on('dragend', function(e) {
+        var newPos = e.target.getPosition();
+        currentPos.lng = newPos.getLng();
+        currentPos.lat = newPos.getLat();
+        document.getElementById('routeFrom').value = newPos.getLng().toFixed(6) + ',' + newPos.getLat().toFixed(6);
+        reverseGeo(newPos.getLng(), newPos.getLat());
+        toast('📍 位置已更新，重新搜索周边...');
+        setTimeout(function() { doSearch(); }, 300);
+    });
+}
+
+// ===== 搜索 =====
+function doSearch() {
+    if (!currentPos) { toast('请先定位'); return; }
+    var keyword = document.getElementById('searchInput').value.trim() || document.getElementById('searchType').value;
+    showLoading(true);
+
+    fetch('https://restapi.amap.com/v3/place/around?key=' + WEB_KEY +
+        '&location=' + currentPos.lng + ',' + currentPos.lat +
+        '&keywords=' + encodeURIComponent(keyword) +
+        '&radius=5000&offset=15&extensions=all')
+        .then(r => r.json())
+        .then(d => {
+            showLoading(false);
+            if (d.status === '1' && d.pois) {
+                renderResults(d.pois, keyword);
+            } else {
+                toast('搜索失败');
+            }
+        }).catch(function() { showLoading(false); toast('网络错误'); });
+}
+
+function renderResults(pois, keyword) {
+    // 清除旧标记
+    markers.forEach(function(m) { m.setMap(null); });
+    markers = [];
+
+    document.getElementById('panelTitle').innerHTML = '"' + keyword + '" 周边 (' + pois.length + '个) <button class="close-btn" onclick="closePanel()">×</button>';
+    var list = document.getElementById('panelList');
+    list.innerHTML = '';
+
+    pois.forEach(function(p, i) {
+        var item = document.createElement('div');
+        item.className = 'item';
+        item.innerHTML =
+            '<span class="num">' + (i+1) + '</span>' +
+            '<div class="info">' +
+                '<div class="name">' + p.name + (p.biz_ext && p.biz_ext.rating ? ' ⭐' + p.biz_ext.rating : '') + '</div>' +
+                '<div class="addr">' + (p.distance ? p.distance + 'm | ' : '') + p.address + '</div>' +
+            '</div>' +
+            '<button class="nav-btn" onclick="event.stopPropagation();navigateTo(\'' + p.location + '\',\'' + p.name.replace(/'/g,'\\\'') + '\')">🧭 导航</button>';
+
+        item.onclick = function() {
+            var loc = p.location.split(',');
+            map.setCenter([parseFloat(loc[0]), parseFloat(loc[1])]);
+            map.setZoom(17);
+            document.getElementById('routeTo').value = p.name;
+        };
+        list.appendChild(item);
+
+        // 地图标记
+        var loc = p.location.split(',');
+        var marker = new AMap.Marker({
+            position: [parseFloat(loc[0]), parseFloat(loc[1])],
+            map: map,
+            title: p.name,
+            label: { content: '' + (i+1), offset: new AMap.Pixel(-8, -10) }
+        });
+        markers.push(marker);
+        marker.on('click', function() {
+            document.getElementById('routeTo').value = p.name;
+            document.getElementById('routeBox').classList.add('show');
+        });
+    });
+
+    document.getElementById('resultPanel').classList.add('show');
+    // 自动适配视野
+    if (pois.length > 0) map.setFitView(null, false, [80, 200, 80, 200]);
+}
+
+// ===== 导航 =====
+function navigateTo(location, name) {
+    document.getElementById('routeTo').value = name;
+    document.getElementById('routeBox').classList.add('show');
+    planRoute();
+}
+
+function planRoute() {
+    if (!currentPos) { toast('请先定位'); return; }
+    var toInput = document.getElementById('routeTo').value.trim();
+    if (!toInput) { toast('请选择或输入终点'); return; }
+
+    // 如果终点是地名而不是坐标，先用后端搜索
+    var coordMatch = toInput.match(/(\d+\.\d+)\s*[,，]\s*(\d+\.\d+)/);
+    if (coordMatch) {
+        doPlanRoute(currentPos.lng + ',' + currentPos.lat, coordMatch[1] + ',' + coordMatch[2]);
+    } else {
+        // 地名 → 搜索坐标
+        fetch('https://restapi.amap.com/v3/place/text?key=' + WEB_KEY +
+            '&keywords=' + encodeURIComponent(toInput) + '&city=&offset=1')
+            .then(r => r.json())
+            .then(d => {
+                if (d.status === '1' && d.pois && d.pois.length > 0) {
+                    doPlanRoute(currentPos.lng + ',' + currentPos.lat, d.pois[0].location);
+                } else {
+                    toast('未找到终点位置');
+                }
+            });
+    }
+}
+
+function doPlanRoute(origin, dest) {
+    showLoading(true);
+    var mode = document.getElementById('routeMode').value;
+    var urlMap = {
+        'driving': 'https://restapi.amap.com/v3/direction/driving',
+        'walking': 'https://restapi.amap.com/v3/direction/walking',
+        'transit': 'https://restapi.amap.com/v3/direction/transit/integrated'
+    };
+    fetch(urlMap[mode] + '?key=' + WEB_KEY + '&origin=' + origin + '&destination=' + dest + '&extensions=all')
+        .then(r => r.json())
+        .then(d => {
+            showLoading(false);
+            if (d.status === '1' && d.route && d.route.paths && d.route.paths.length > 0) {
+                var path = d.route.paths[0];
+                var html = '<strong>' + (mode==='driving'?'🚗 驾车':mode==='walking'?'🚶 步行':'🚌 公交') + '</strong><br>';
+                html += '距离: ' + (path.distance/1000).toFixed(1) + 'km | 耗时: ' + Math.round(path.duration/60) + '分钟';
+                if (d.route.taxi_cost) html += ' | 打车约¥' + d.route.taxi_cost;
+                path.steps.forEach(function(s) {
+                    html += '<br>→ ' + (s.instruction || s.road || '');
+                });
+                document.getElementById('routeResult').innerHTML = html;
+                document.getElementById('routeResult').classList.add('show');
+
+                // 高德 App 外链
+                var destParts = dest.split(',');
+                var amapUrl = 'https://uri.amap.com/navigation?from=' + origin + ',我的位置&to=' + dest + '&mode=car&callnative=1';
+                var link = document.getElementById('amapLink');
+                link.href = amapUrl;
+                link.style.display = 'inline';
+
+                toast('路线规划完成: ' + (path.distance/1000).toFixed(1) + 'km');
+            } else {
+                toast('路线规划失败');
+            }
+        }).catch(function() { showLoading(false); toast('请求失败'); });
+}
+
+// ===== UI 工具 =====
+function closePanel() {
+    document.getElementById('resultPanel').classList.remove('show');
+    markers.forEach(function(m) { m.setMap(null); });
+    markers = [];
+}
+
+function closeRoute() {
+    document.getElementById('routeBox').classList.remove('show');
+    document.getElementById('routeResult').classList.remove('show');
+}
+
+function toast(msg) {
+    var t = document.createElement('div');
+    t.className = 'toast';
+    t.textContent = msg;
+    document.body.appendChild(t);
+    setTimeout(function() { t.remove(); }, 2500);
+}
+
+function showLoading(show) {
+    document.getElementById('loading').classList.toggle('show', show);
+}
+
+// 启动：先从后端拉取高德 Key（不内置于前端），再初始化地图
+window.onload = function() {
+  fetch('/api/map/key').then(function(r){ return r.json(); }).then(function(d){
+    JS_KEY = d.key || '';
+    WEB_KEY = d.key || '';
+    init();
+  }).catch(function(){
+    JS_KEY = ''; WEB_KEY = '';
+    init();
+  });
+};
+</script>
+</body>
+</html>

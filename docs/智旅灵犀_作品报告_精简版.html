@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>智旅灵犀 · 文旅全场景智能辅助系统 — 作品报告</title>
+<style>
+  @page { size: A4; margin: 0; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Microsoft YaHei", "微软雅黑", "PingFang SC", sans-serif; color: #2a2521; background: #fbf9f5; }
+  .page { position: relative; width: 210mm; height: 296mm; padding: 12mm 15mm 15mm; overflow: hidden;
+          page-break-after: always; background: #fbf9f5;
+          display: flex; flex-direction: column; justify-content: space-between; }
+  .page:last-child { page-break-after: auto; }
+  /* 块间距统一：页内直接子块一律不自带上下外边距，间隔只由整页均分决定；
+     flex 子块禁止伸缩，页面只装得下就均分、装不下就报溢出，不把块压扁 */
+  .page > *:not(.hdr):not(.ftr) { flex: 0 0 auto; margin-top: 0; margin-bottom: 0; }
+  .page > .hdr { margin-bottom: 3.4mm; }
+  .page.top { justify-content: flex-start; }
+  .hdr { display: flex; justify-content: space-between; align-items: center; font-size: 9pt; color: #7a7168;
+         border-bottom: 0.6pt solid #e6ddcc; padding-bottom: 2.2mm; margin-bottom: 3.4mm; letter-spacing: .3pt; }
+  .hdr .topic { font-size: 8.8pt; font-weight: 700; color: #9a3412; background: #f7dec9; white-space: nowrap;
+                border: 0.6pt solid #e8cdb4; padding: 1mm 2.6mm; letter-spacing: 0; }
+  .ftr { position: absolute; left: 15mm; right: 15mm; bottom: 7mm; display: flex; justify-content: space-between;
+         align-items: center; font-size: 9pt; color: #7a7168; border-top: 0.6pt solid #e6ddcc; padding-top: 2.2mm; }
+  .ftr .pg { color: #fff; background: #c2410c; font-weight: 700; font-size: 8.8pt; padding: 0.8mm 2.4mm; letter-spacing: .3pt; }
+  .brand { color: #c2410c; font-weight: 700; }
+
+  h1.ch { font-size: 18pt; color: #241f1a; background: linear-gradient(90deg, #f3eee4 0%, #f8f3ea 62%, #fdf9f3 100%);
+          margin-bottom: 3.2mm; padding: 3.4mm 4.4mm; border-left: 4pt solid #c2410c; line-height: 1.3; letter-spacing: .5pt; }
+  h2 { font-size: 13pt; color: #9a3412; background: #f3eee4; border-left: 3pt solid #c2410c;
+       padding: 2mm 3mm; margin: 4mm 0 2.4mm; }
+  p { font-size: 10.8pt; line-height: 1.76; text-align: justify; margin-bottom: 2.4mm; text-indent: 2em; }
+  p.note { text-indent: 0; }
+  .cap { font-size: 10pt; color: #9a3412; font-weight: 700; background: #fdf3ea; text-indent: 0;
+         border-left: 2.5pt solid #c2410c; padding: 0.9mm 2.4mm; margin: 2.4mm 0 1.3mm; }
+  .note { font-size: 9.4pt; color: #7a7168; line-height: 1.55; margin-top: 1.2mm; }
+  .tag { display: inline-block; font-size: 8.2pt; font-weight: 700; padding: 0.6mm 1.8mm; border-radius: 2pt; vertical-align: 1pt; }
+  .m1 { background: #f7dec9; color: #9a3412; }
+  .m3 { background: #efe9de; color: #6e7582; }
+  .m4 { background: #dceae4; color: #17705c; }
+
+  table { width: 100%; border-collapse: collapse; font-size: 9.4pt; }
+  th { background: #c2410c; color: #fff; font-weight: 600; padding: 2.4mm 2.1mm; text-align: left; line-height: 1.3; }
+  td { border-bottom: 0.5pt solid #e6ddcc; padding: 2.6mm 2.1mm; vertical-align: top; line-height: 1.45; }
+  tr:nth-child(even) td { background: #f3eee4; }
+  table.roomy td, table.roomy th { padding: 3.9mm 2.1mm; }
+  table.mroomy td, table.mroomy th { padding: 4.5mm 2.1mm; }
+  table.xroomy td, table.xroomy th { padding: 5.4mm 2.1mm; }
+  ul.tight.roomy li { margin-bottom: 2.9mm; }
+  ul.tight.roomy { line-height: 1.9; }
+  .panel.dark.tall { line-height: 2.55; padding: 4.8mm 4.4mm; }
+
+  .grid { display: flex; flex-wrap: wrap; gap: 3mm; }
+  .card { flex: 1 1 30%; background: #fdf9f3; border: 0.6pt solid #e6ddcc; border-left: 3pt solid #c2410c; padding: 4mm 3.6mm; }
+  .card b { display: block; font-size: 19pt; color: #c2410c; line-height: 1.2; }
+  .card span { font-size: 9.6pt; color: #6e7582; display: block; margin-top: 1.4mm; line-height: 1.5; }
+  .card.g { border-left-color: #17705c; } .card.g b { color: #17705c; }
+  .card.txt b { font-size: 12pt; }
+
+  .flow { display: flex; align-items: stretch; gap: 2mm; margin: 2mm 0; }
+  .flow > div { flex: 1; background: #fdf9f3; border: 0.6pt solid #e6ddcc; border-left: 3pt solid #c2410c; padding: 3.4mm; font-size: 9.8pt; line-height: 1.55; }
+  .flow > div b { display: block; color: #c2410c; font-size: 10.6pt; margin-bottom: 0.8mm; }
+  .flow .ar { flex: 0 0 4mm; display: flex; align-items: center; justify-content: center; color: #c2410c; border: none; background: none; font-size: 11pt; padding: 0; }
+  .stack > div { border: 0.6pt solid #e6ddcc; border-left: 3pt solid #c2410c; padding: 3.2mm 3.4mm; font-size: 10pt; line-height: 1.6; background: #fdf9f3; }
+  .stack > div + div { margin-top: 1.6mm; }
+  .stack .dn { text-align: center; color: #c2410c; font-size: 9.8pt; border: none; background: none; margin: 0.8mm 0; padding: 0; }
+  .stack b { color: #241f1a; }
+
+  .donut { width: 58mm; height: 58mm; border-radius: 50%; position: relative; flex: 0 0 auto; }
+  .donut::after { content: ""; position: absolute; inset: 25%; background: #fbf9f5; border-radius: 50%; }
+  .donut em { position: absolute; inset: 0; display: flex; flex-direction: column; align-items: center; justify-content: center;
+              font-style: normal; z-index: 2; font-size: 12.5pt; color: #c2410c; font-weight: 700; }
+  .donut em small { font-size: 9pt; color: #7a7168; font-weight: 400; }
+  .chart { display: flex; gap: 5mm; align-items: center; }
+  .leg { font-size: 9.8pt; line-height: 2.1; }
+  .leg i { display: inline-block; width: 3mm; height: 3mm; margin-right: 1.6mm; }
+
+  .panel { background: #fdf9f3; border: 0.6pt solid #e6ddcc; padding: 2.6mm 3.2mm; font-size: 9.8pt; line-height: 1.7; }
+  .panel.warn { background: #fdf3ea; border-color: #e8cdb4; }
+  .panel.dark { background: #2b2622; color: #ede7dc; border: none; font-family: Consolas, "Courier New", monospace; font-size: 9.4pt; line-height: 2.25; padding: 4mm 4.4mm; }
+  .panel.dark .t { color: #e8a87c; }
+  ul.tight { margin: 0 0 2mm 5.5mm; font-size: 10.4pt; line-height: 1.72; }
+  ul.tight li { margin-bottom: 2mm; text-align: justify; }
+  .mono { font-family: Consolas, "Courier New", monospace; font-size: 9.4pt; background: #f3eee4; padding: 0.3mm 1.2mm; }
+
+  .title { background: linear-gradient(135deg, #f7ecdd 0%, #efe0cb 100%); border-left: 4pt solid #c2410c; padding: 5.4mm 5.6mm; margin-bottom: 3.4mm; }
+  .title h1 { font-size: 23pt; color: #9a3412; letter-spacing: 1.4pt; line-height: 1.25; }
+  .title h4 { font-size: 11.6pt; font-weight: 400; color: #6e7582; margin-top: 1.6mm; letter-spacing: .6pt; }
+  .title .meta { margin-top: 3.4mm; font-size: 9.8pt; color: #2a2521; line-height: 1.75; border-top: 0.6pt solid #d9cdbb; padding-top: 2.4mm; }
+
+  .page { padding-bottom: 19mm; }
+  .page.top { justify-content: flex-start; gap: 3.4mm; }
+  /* 封面：揭榜挂帅赛报告模板，坐标按模板 PDF 的文本框逐行实测换算 */
+  .tcov { padding: 0; background: #dfe6f7 url("report_cover_bg.png") no-repeat center / 100% 100%;
+          font-family: "仿宋_GB2312", "FangSong", "华文仿宋", STFangsong, serif; }
+  .tcov .t-list { position: absolute; left: 21.3mm; top: 87.5mm; }
+  .tcov .t-it { height: 9.87mm; line-height: 9.87mm; white-space: nowrap; font-size: 16pt; color: #0d0d10; }
+  .tcov .t-box { display: inline-block; width: 4.6mm; height: 4.6mm; border: 0.34mm solid #0d0d10;
+                 vertical-align: middle; margin-right: 4.0mm; position: relative; }
+  .tcov .t-box.on::after { content: ""; position: absolute; left: 0.35mm; top: 0.15mm; width: 3.4mm; height: 2.6mm;
+                           border-left: 0.55mm solid #0d0d10; border-bottom: 0.55mm solid #0d0d10;
+                           transform: rotate(-45deg); }
+  .tcov .t-team { position: absolute; left: 20.6mm; top: 206.1mm; height: 9.88mm; line-height: 9.88mm;
+                  font-size: 18pt; font-weight: 700; color: #0d0d10; white-space: nowrap; }
+
+  table.toc { width: 100%; border-collapse: collapse; }
+  .toc2 { display: flex; gap: 7mm; align-items: flex-start; }
+  .toc2 > table { flex: 1 1 0; }
+  table.toc td { padding: 2.34mm 2.4mm; font-size: 10.2pt; border-bottom: 0.5pt solid #e6ddcc; color: #2a2521; }
+  table.toc td.pg { text-align: right; color: #c2410c; font-weight: 700; width: 12%; }
+  table.toc tr.lv1 td { font-weight: 700; color: #9a3412; background: #f7dec9; font-size: 11pt; padding: 2.45mm 2.4mm; }
+  table.toc tr.lv2 td:first-child { padding-left: 5mm; }
+  table.toc tr.lv2 td.pg { color: #a63a12; }
+  
+  .cover { background: linear-gradient(135deg, #fdf9f3 0%, #f7ecdd 52%, #efe0cb 100%); color: #241f1a; padding: 0; }
+  .cover .in { padding: 26mm 20mm 18mm; position: relative; height: 100%; }
+  .cover .logo { width: 17mm; height: 17mm; border: none; background: #c2410c; color: #fff; border-radius: 50%;
+                 display: flex; align-items: center; justify-content: center; font-size: 20pt; font-weight: 700; }
+  .cover h1 { font-size: 30pt; letter-spacing: 2pt; margin-top: 22mm; line-height: 1.25; color: #9a3412; }
+  .cover h4 { font-size: 14pt; font-weight: 400; color: #7a7168; margin-top: 5mm; letter-spacing: 1pt; }
+  .cover .sub { margin-top: 12mm; font-size: 10.5pt; color: #2a2521; line-height: 1.9; }
+  .cover .row { display: flex; gap: 4mm; margin-top: 16mm; }
+  .cover .chip { flex: 1; background: #ffffff; border: 0.6pt solid #e6ddcc; padding: 4mm; }
+  .cover .chip b { display: block; font-size: 18pt; color: #c2410c; }
+  .cover .chip span { font-size: 8.5pt; color: #7a7168; }
+  .cover .foot { position: absolute; left: 20mm; right: 20mm; bottom: 16mm; font-size: 9pt; color: #7a7168;
+                 border-top: 0.6pt solid #d9cdbb; padding-top: 4mm; }
+  .page.cover { display: block; }
+</style>
+</head>
+<body>
+
+<!-- P1 封面 -->
+<section class="page cover">
+  <div class="in">
+    <div class="logo">灵</div>
+    <div style="margin-top:6mm;font-size:10pt;color:#7a7168;letter-spacing:1pt">智旅灵犀 · 文旅全场景智能辅助系统</div>
+    <h1>作 品 报 告</h1>
+    <h4>游客画像驱动 × 消费转化设计 × 文创产品赋能</h4>
+    <div class="sub">基于 AI Coding 的轻量化智能 Skill 协同实践<br>
+      Flask + waitress 后端 · 原生 JS 零框架前端 · 国产大模型运行期热切换 · 火山方舟 Seedream 生图</div>
+    <div class="row">
+      <div class="chip"><b>85</b><span>唯一 REST 路径</span></div>
+      <div class="chip"><b>7 + 3</b><span>数据插件 / OpenClaw 式 Skill</span></div>
+      <div class="chip"><b>1716</b><span>回归测试项 · 0 失败</span></div>
+      <div class="chip"><b>37.3%</b><span>长对话输入 token 缓存命中</span></div>
+    </div>
+    <div class="foot">软件版本 v2.2.0 ｜ 参赛赛道：文旅智能辅助场景（AI Coding / OpenClaw 引擎规范） ｜ 2026 年 10 月<br>
+      全部数据截至提交 <span class="mono" style="background:#f3eee4;color:#9a3412">d89ae53</span>，全量回归与离线运行记录实测于 2026-10-05，
+      全部数字可由 <span class="mono" style="background:#f3eee4;color:#9a3412">python run_tests.py</span> 与源码统计复现</div>
+  </div>
+</section>
+<section class="page top">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">目录</span></div>
+  <h1 class="ch">目　录</h1>
+  <div class="toc2">
+  <table class="toc">
+    <tr class="lv1"><td>1 应用背景与痛点</td><td class="pg">3</td></tr>
+    <tr class="lv2"><td>1.1 需求边界</td><td class="pg">3</td></tr>
+    <tr class="lv2"><td>1.2 三条设计约束</td><td class="pg">4</td></tr>
+    <tr class="lv2"><td>1.3 这份报告怎么读</td><td class="pg">4</td></tr>
+    <tr class="lv1"><td>2 场景描述与目标用户</td><td class="pg">5</td></tr>
+    <tr class="lv2"><td>2.1 三类目标用户</td><td class="pg">5</td></tr>
+    <tr class="lv2"><td>2.2 场景一 从想法到出发</td><td class="pg">5</td></tr>
+    <tr class="lv2"><td>2.3 场景二 素材变名片</td><td class="pg">5</td></tr>
+    <tr class="lv2"><td>2.4 七类同行关系</td><td class="pg">5</td></tr>
+    <tr class="lv2"><td>2.5 策略库里的原文</td><td class="pg">6</td></tr>
+    <tr class="lv2"><td>2.6 场景三 长对话可控性</td><td class="pg">6</td></tr>
+    <tr class="lv2"><td>2.7 场景四 从热点到可售内容</td><td class="pg">7</td></tr>
+    <tr class="lv1"><td>3 技术创新点</td><td class="pg">8</td></tr>
+    <tr class="lv2"><td>3.1 Agent 编排与能力分层</td><td class="pg">8</td></tr>
+    <tr class="lv2"><td>3.2 三个 Skill 能力包</td><td class="pg">8</td></tr>
+    <tr class="lv2"><td>3.3 长对话上下文</td><td class="pg">9</td></tr>
+    <tr class="lv2"><td>3.4 数据来源分层</td><td class="pg">9</td></tr>
+    <tr class="lv2"><td>3.5 三道闸口与降级不静默</td><td class="pg">10</td></tr>
+    <tr class="lv2"><td>3.6 检索出处可见</td><td class="pg">10</td></tr>
+    <tr class="lv2"><td>3.7 成本可控</td><td class="pg">10</td></tr>
+    <tr class="lv2"><td>3.8 模型层热切换与容错</td><td class="pg">11</td></tr>
+    <tr class="lv2"><td>3.9 AI Coding 开发实践</td><td class="pg">11</td></tr>
+  </table>
+  <table class="toc">
+        <tr class="lv1"><td>4 实用性与落地验证</td><td class="pg">12</td></tr>
+    <tr class="lv2"><td>4.1 功能总览：六个界面入口</td><td class="pg">12</td></tr>
+    <tr class="lv2"><td>4.2 规划：人群 · 约束 · 产出</td><td class="pg">13</td></tr>
+    <tr class="lv2"><td>4.3 对话：十项答复控制</td><td class="pg">14</td></tr>
+    <tr class="lv2"><td>4.4 营销：六类内容与数字名片</td><td class="pg">15</td></tr>
+    <tr class="lv2"><td>4.5 首页 · 社区 · 我的</td><td class="pg">16</td></tr>
+    <tr class="lv2"><td>4.6 工程规模与质量</td><td class="pg">17</td></tr>
+    <tr class="lv2"><td>4.7 部署与运行</td><td class="pg">17</td></tr>
+    <tr class="lv2"><td>4.8 测试怎么组织</td><td class="pg">18</td></tr>
+    <tr class="lv2"><td>4.9 量级对照</td><td class="pg">18</td></tr>
+    <tr class="lv2"><td>4.10 数据主权与可交付性</td><td class="pg">19</td></tr>
+    <tr class="lv2"><td>4.11 实用性判断</td><td class="pg">19</td></tr>
+    <tr class="lv1"><td>5 已知边界与复现方式</td><td class="pg">20</td></tr>
+    <tr class="lv2"><td>5.1 已知限制</td><td class="pg">20</td></tr>
+    <tr class="lv2"><td>5.2 数据口径约定</td><td class="pg">20</td></tr>
+    <tr class="lv2"><td>5.3 复现命令</td><td class="pg">21</td></tr>
+    <tr class="lv2"><td>5.4 下一步</td><td class="pg">21</td></tr>
+    <tr class="lv2"><td>5.5 结语</td><td class="pg">21</td></tr>
+</table>
+  </div>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">2 / 9</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">应用背景与痛点</span></div>
+  <div class="title">
+    <h1>智旅灵犀 · 文旅全场景智能辅助系统</h1>
+    <h4>作品报告　｜　面向游客、文旅商户与景区运营方的多 Agent 智能辅助系统</h4>
+    <div class="meta">软件版本 v2.2.0　｜　参赛赛道：文旅智能辅助场景（AI Coding / OpenClaw 应用）<br>
+      技术栈：Flask + LangGraph + SQLite + 原生前端　｜　运行形态：本机一键启动，数据仅存本机，不依赖云服务</div>
+  </div>
+  <h1 class="ch">1　应用背景与痛点</h1>
+  <p>文旅消费长期存在三处结构性错配。<b>游客侧</b>：攻略、票价、开放时间、天气、路线分散在多个入口，一条行程要自己反复核对拼接，
+    而通用大模型给出的价格与营业时间常常已经过期，越具体越容易错。<b>商户侧</b>：中小景区、民宿与文创店主既不会写文案也请不起设计，
+    一条素材以小时计，做完就停在一段文字上，没有可落地的转化入口。<b>运营侧</b>：把 AI 接进真实业务时，最贵的不是模型调用费，
+    而是「错了没人知道」——幻觉无法拦截、成本无法核算、长对话无法收敛。</p>
+  <p>本项目针对这三处错配做成一套可直接部署的完整系统：以<b>客群画像驱动</b>的行程规划与营销素材生成作为两条主链路；
+    以<b>数据来源分层 + 三道闸口</b>守住真实性；以<b>上下文预算与真实 token 计量</b>守住成本；
+    并把产出物本身（带二维码的数字名片）做成获客入口，让「生成」与「转化」在同一条链路上闭合。</p>
+  <div class="grid" style="gap:4.4mm">
+    <div class="card" style="flex:1 1 45%; padding:6mm 4.4mm"><b>2 条</b><span>主链路：个性化行程规划 / 营销素材与数字名片</span></div>
+    <div class="card" style="flex:1 1 45%; padding:6mm 4.4mm"><b>4 层</b><span>数据来源分级接入，本地库仅作最后兜底</span></div>
+    <div class="card" style="flex:1 1 45%; padding:6mm 4.4mm"><b>3 道</b><span>闸口反幻觉，且降级不静默、可回溯</span></div>
+    <div class="card g" style="flex:1 1 45%; padding:6mm 4.4mm"><b>1716 项</b><span>自动化断言全绿，0 失败（实测）</span></div>
+  </div>
+  <h2>1.1 需求边界：做什么、不做什么</h2>
+  <p><b>做</b>：行程规划与动态调整、行程内消费触点、营销文案与文创数字名片、长对话稳定运行、运行成本与数据出处可核。
+    <b>不做</b>：不接支付与真实下单（只提供官方购票深链跳转到平台），不做需要个人身份的功能，
+    也不承诺转化率——<b>未做人工对照实验</b>，故不给「效率提升 N%」这类结论，人工耗时基线只作经验估计并标注。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">3 / 9</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">应用背景 · 设计约束</span></div>
+  <h2>1.2 三条设计约束：为什么不是「接一个大模型 API」</h2>
+  <p>文旅场景里，「接个大模型」和「做成一个能用的系统」之间隔着三件事，本项目的架构选择全部围绕这三件事展开。
+    <b>第一是真实性</b>：通用模型给出的票价与开放时间常常已经过期，而且越具体越像真的。本系统不把这件事交给一句提示词，
+    而是把它做成系统属性——数据来源分四层按优先级接入、每层不可用都有明确退路、每张结果卡片都带出处徽标（见 3.4、3.5）。</p>
+  <p><b>第二是成本</b>：对话越长历史越长，输入 token 线性膨胀，费用与延迟都不可预期。本系统给输入上硬预算
+    （<span class="mono">CTX_BUDGET = 24000</span>），把每轮都变的值排到提示词末尾以吃上游缓存命中，
+    并按真实 usage 逐场景计量而不是按公开单价推算（见 3.3、3.7）。</p>
+  <p><b>第三是可用性</b>：产出必须落到一个可执行的对象上，而不是一段还要人再加工的文字。
+    行程要能落到可导航的路线与可点开的购票深链，素材要能落到可复制的正文与可印刷的二维码名片，
+    数据要能落到一键导出的整包文件——「印码即媒介」就是这个意思：产出物本身就是入口（见 2.3、4.1）。</p>
+  <div class="cap">表 1-1　三处错配 · 系统对策 · 展开位置</div>
+  <table>
+    <tr><th style="width:31%">错配在哪</th><th style="width:44%">系统对策</th><th>展开在哪</th></tr>
+    <tr><td>游客侧：入口分散，模型给的票价与营业时间常已过期</td><td>四层数据来源 + 三道闸口 + 出处徽标</td><td>2.2 / 3.4 / 3.5</td></tr>
+    <tr><td>商户侧：素材做完停在一段文字，没有转化入口</td><td>五类成文规格 + 数字名片印码</td><td>2.3 / 2.7 / 4.1</td></tr>
+    <tr><td>运营侧：幻觉拦不住、成本算不清、长对话收不拢</td><td>真实 token 计量 + 输入预算 + 会话可控</td><td>2.6 / 3.3 / 3.7</td></tr>
+  </table>
+  <h2>1.3 这份报告怎么读</h2>
+  <p>全文按「应用背景 → 场景描述 → 技术创新 → 实用性与落地 → 已知边界」推进，对应评委关注的四项：
+    第 1 章讲为什么值得做，第 2 章讲做出来是什么样子，第 3 章讲技术上做了什么别人没做的，
+    第 4 章讲它跑得起来并且量得清，第 5 章把没做到的写清楚。所有数字都带性质标签：
+    <span class="tag m1">实测</span> 由脚本或面板读自真实运行系统并附复现命令，
+    <span class="tag m3">经验估计</span> 口径公开可复核，<span class="tag m4">预期</span> 尚未验证的目标。
+    三类不混用、不互相冒充；完整实现细节见技术附件《作品报告》（全 34 页），按章展开。</p>
+  <div class="grid">
+    <div class="card txt"><b>真实性</b><span>四层数据来源 + 三道闸口 + 出处徽标，查不到就标注，绝不编造</span></div>
+    <div class="card txt"><b>可预期</b><span>输入预算硬上限 + 真实 token 计量 + 缓存命中与生图复用</span></div>
+    <div class="card txt"><b>能落地</b><span>能导航的路线 · 能印刷的名片 · 能导出的整包数据</span></div>
+  </div>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">4 / 9</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">场景描述与目标用户</span></div>
+  <h1 class="ch">2　场景描述与目标用户</h1>
+  <h2>2.1 三类目标用户</h2>
+  <div class="grid">
+    <div class="card txt"><b>自由行游客</b><span>要一条能直接出发的行程：几点到、怎么去、门票多少、下雨怎么改，而不是又一篇攻略</span></div>
+    <div class="card txt"><b>文旅商户</b><span>景区、民宿、餐饮、文创店主：要能直接发的文案与带扫码入口的成品素材</span></div>
+    <div class="card txt"><b>运营与推广方</b><span>需要按客群批量出内容、看真实热度、算得清每次调用花了多少</span></div>
+  </div>
+  <h2>2.2 场景一　一次自由行，从想法到出发</h2>
+  <div class="flow">
+    <div><b>① 说需求</b>缺要素先被追问，不靠猜</div><div class="ar">→</div>
+    <div><b>② 选客群</b>七类同行关系定节奏</div><div class="ar">→</div>
+    <div><b>③ 出行程</b>含时段、路线、票价与深链</div><div class="ar">→</div>
+    <div><b>④ 接着改</b>「第二天太赶」就地重排</div><div class="ar">→</div>
+    <div><b>⑤ 带走</b>导出、分享、存为我的攻略</div>
+  </div>
+  <p>用户只说「出去玩三天」时，系统不补全假设，而是返回澄清问题，把目的地、天数、预算、人群补齐后才开始生成。
+    生成过程分阶段可见：思考 → 检索 → 规划 → 审校。产出里的地点带开放时间、票价、地址与来源标注，
+    实时数据可用时价格标「来源：美团（实时）」并挂购票直达链接，取不到时明写「暂未获取到实时数据」而不编数，
+    并给出体力节奏与雨天替代路线。行程可在同一会话里连续修改，不必重头再问。一次完整行程生成总耗时 50.03s、输出 1,444 字（含实时天气与票价采集，非纯模型耗时）<span class="tag m1">实测</span>。</p>
+  <h2>2.3 场景二　一条素材，变成一张能扫码的名片</h2>
+  <p>商户选一个景点或文创产品，一次成文：正文文案与平台适配版本一起出，广告法极限词等合规口径写进成文规格，
+    数字类内容只走卡片式呈现，文创产品则单独出「数字名片」形态。单篇文案生成 6.66s、首字 1.21s、成文 1,227 字<span class="tag m1">实测</span>。
+    文案可一键转成带二维码的数字名片，印刷到包装、桌牌或展板上，扫码即达这条内容页—— 把转化路径从「回去搜一下」缩短成「当场扫一下」，这是本项目「印码即媒介」的落点。</p>
+  <h2>2.4 七类同行关系与差异化产出</h2>
+  <p>规划界面上的「同行关系」有七个选项：情侣/伴侣、亲子家庭、朋友/闺蜜、银发同行、商务差旅、团建团队、独自旅行，
+    归一化后落到七套成文客群策略（详见 4.2）。换不同客群即产出<b>可复现的差异化方案</b>——每日景点数、动线密度、
+    住宿品类、餐饮档次与消费点清单都会变，不是同一模板换措辞。这一条通过多次调用 <span class="mono">/api/plan</span> 对比验证<span class="tag m1">实测</span>。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">5 / 10</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">场景描述 · 差异化与长对话</span></div>
+  <h2>2.5 客群差异不是换措辞：策略库里的原文</h2>
+  <p>差异化不靠提示词里加一句「请考虑老年人」，而是有两处可查的口径。<span class="mono">tourism-advisor</span> 的
+    <span class="mono">CROWD_STRATEGIES</span> 为规划侧七类客群各给出景点、住宿、餐饮、节奏与消费点五项策略，
+    直接决定动线密度与住宿品类；<span class="mono">smart-matching</span> 另有六类客群画像库
+    （<span class="mono">/api/health</span> 实测返回 <span class="mono">crowds_loaded: 6</span>），服务匹配与营销侧。
+    两段原文可以直接对比：<b>银发康养</b>的节奏是「慢节奏，每天 1-2 个景点，步行为主」，住宿要求「电梯、低楼层、安静、医疗配套、无障碍」，
+    餐饮是「清淡、软食、养生餐、正餐准时」；<b>学生穷游</b>的节奏是「紧凑高效，公共交通，每天 3-4 个景点」，
+    住宿是「青旅、民宿床位、交通便利、安全」，餐饮是「本地小吃、性价比优先、分量大」。
+    同一座城市换到这两类客群下，规则骨架层就落到不同的每日景点数与不同的住宿品类上——差异发生在行程结构上，而不是文案措辞上。</p>
+  <p>消费触点同样在策略库里成表：亲子家庭挂「亲子套票 / 儿童体验项目 / 主题餐厅」，情侣挂「情侣套餐 / 夜游演艺 / 摄影服务」，
+    银发康养挂「康养体验 / 文化讲解 / 适老化文创」。行程因此天然带着「到哪里可以花钱」的入口，而不只是一张观光清单，
+    这是把规划与转化放进同一条链路的做法。</p>
+  <h2>2.6 场景三　一条长对话里的可控性</h2>
+  <p>规划与营销之外，第三个场景是「用得久」。真实用户不会一问一答就走，而多数演示在第三轮就开始丢前面的约束。
+    本系统把对话控制做成四项能力：<b>多会话并行</b>（会话列表按用户隔离，新建对话不再删除历史）、
+    <b>停止生成</b>（真停上游流并释放线程，半截答复按「可能不完整」落库，不冒充完整答复）、
+    <b>重新生成 / 编辑重发</b>（撤回只撤「这一轮」，比对不上就一律不删，防误删历史）、
+    <b>点赞点踩</b>（反馈落库，回放时投票状态不丢，规则指标进运维面板）。</p>
+  <p>这四条按主题分文件写成回归：<span class="mono">test_session_management</span> 76 项、
+    <span class="mono">test_stream_stop</span> 71 项、<span class="mono">test_regenerate</span> 44 项、
+    <span class="mono">test_feedback_metrics</span> 112 项，合计 303 项<span class="tag m1">实测</span>。
+    另有上下文占用进度条与到 75% 触发线自动压缩（<span class="mono">test_context_manager</span> 57 项），
+    让「聊得长」在界面上是看得见的状态，而不是等回答变慢才发现。</p>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 21%"><b>76 项</b><span>多会话：列表按用户隔离，新建对话不删历史</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>71 项</b><span>停止生成：上游流真停、线程释放、半截标「可能不完整」</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>44 项</b><span>重新生成 / 编辑重发：只撤这一轮，比对不上不删</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>112 项</b><span>点赞点踩：反馈落库，回放时投票状态不丢</span></div>
+  </div>
+  <p>这四条看着不像「AI 亮点」，但没有它们，长对话产品的证据就积累不起来：反馈不落库就没有答复质量指标，
+    停止不真停就说不清上游流占了多少线程，会话不隔离就没法把成本按场景归账，摘要不落库就会在重启后丢掉已确认的预算与人群。
+    本项目把这四件事都做成有断言的功能，而不是留给运气，也不写进「后续规划」。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">6 / 14</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">场景描述 · 运营方</span></div>
+  <h2>2.7 场景四　运营与推广方：从热点到可售内容</h2>
+  <p>前三个场景的共同点是「一次要一份」，运营方的需求相反：<b>要批量、要按客群出、要算得清</b>。
+    这条链路从真实热点开始——抖音实时热点经接口进入灵感库，卡片带的是接口返回的真实热度值而不是编出来的数字，
+    12 小时滚动热点池落盘持久化，重启不丢；热点再经二次验证才出卡，宁缺不假。
+    拿到选题后一次成文，产出物按用途分五类规格，每类有自己的结构、篇幅与语感要求：</p>
+  <div class="cap">表 2-1　五类文案规格（取自 <span class="mono">app.py</span> 的 <span class="mono">type_specs</span>，逐条对应真实提示词约束；表单里的第六类「文创产品概念」另走 <span class="mono">/api/creative</span>，不在本表）</div>
+  <table>
+    <tr><th style="width:22%">内容类型</th><th style="width:22%">篇幅口径</th><th>结构要求</th></tr>
+    <tr><td>社交媒体种草</td><td>全文 ≤120 字</td><td>噱头主标题 ≤14 字 · 一句传播语 ≤20 字 · 三个亮点各 ≤16 字 · 行动号召 ≤20 字 · 3~5 个话题标签</td></tr>
+    <tr><td>公众号推文</td><td>600~900 字</td><td>标题 ≤20 字 · 导语 2~3 句 · 三个小节各 80~150 字（是什么 / 好在哪 / 怎么玩）· 结尾给行动入口</td></tr>
+    <tr><td>短视频分镜脚本</td><td>15~30 秒 · 4~6 镜</td><td>前 3 秒钩子 · 每镜一行「镜N｜时长｜画面｜口播｜字幕花字」· 末镜 CTA</td></tr>
+    <tr><td>海报文案</td><td>全文 ≤100 字</td><td>主标题 ≤12 字 · 副标题 ≤20 字 · slogan ≤16 字 · 卖点三条各 ≤10 字 · 行动号召 ≤15 字 · 视觉建议一句</td></tr>
+    <tr><td>活动策划案</td><td>400~600 字</td><td>活动名称 ≤16 字 · 主题 slogan ≤20 字 · 时间地点一句 · 环节流程 3~5 个环节 · 活动亮点 2~3 条 · 宣传与转化</td></tr>
+  </table>
+  <p>五类规格写在提示词里，因此「短」是真的短：种草文案超过 120 字、海报超过 100 字就不算合格产出，
+    这类约束能被断言，也就能被复现。文创产品另出「数字名片」形态（带二维码，扫码直达该条内容页），
+    让线下包装、桌牌与展板成为可统计的入口；每次调用的 token 与耗时进运维面板，
+    批量出内容时「这一批花了多少」是可以查的数，而不是感觉<span class="tag m1">实测</span>。</p>
+  <div class="flow">
+    <div><b>① 采热点</b>抖音实时接口 · 12 小时滚动池</div><div class="ar">→</div>
+    <div><b>② 二次验证</b>验真才出卡 · 带真实热度值</div><div class="ar">→</div>
+    <div><b>③ 成五类文</b>规格写进提示词 · 附合规检查</div><div class="ar">→</div>
+    <div><b>④ 出名片</b>文创产品 · 二维码印码</div><div class="ar">→</div>
+    <div><b>⑤ 可统计</b>扫码进面板 · 调用量算得清</div>
+  </div>
+  <p>这条链路与游客侧共用同一套闸口：营销生成同样先过输入闸口（缺参先澄清），输出同样拦绝对化用语与无来源的价格表述，
+    所以「短」和「真」是同一次约束的两面。表 2-1 的每一格都取自 <span class="mono">app.py</span> 里
+    <span class="mono">type_specs</span> 的真实提示词约束，不是事后排版规则——能被断言的篇幅才算规格，否则只是偏好。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">7 / 14</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">技术创新点 · 智能体与 Skill</span></div>
+  <h1 class="ch">3　技术创新点</h1>
+  <p>本章按创新层次排列，而不是按实现顺序：先讲智能体与 Skill 层（3.1～3.3），它决定这套系统「能被追问什么、能交付成什么形态」；
+    再讲支撑它的工程层（3.4～3.9），它决定说出口的价格、出处与成本能不能被核得上。</p>
+  <h2>3.1 Agent 编排与能力分层：多角色图 + 标准 MCP + Skill 能力包</h2>
+  <p>对话用 LangGraph <span class="mono">StateGraph</span> 编排，规划 / 执行 / 审校多角色分工，工具走标准 Function-Calling，
+    并对外提供<b>标准 MCP Server</b>，同一批能力既能被自己的界面调用，也能被外部 Agent 按标准协议调用。
+    其上挂了链路追踪、答复质量评估、Guardrails 与提示注入防护、语义缓存、模型路由与 GraphRAG。
+    <b>接线状态如实可查</b>：面板区分 <span class="mono">wired_active</span> / <span class="mono">wired_idle</span> /
+    <span class="mono">not_wired</span> 三态，未接线模块绝不进请求路径，另有离线运行记录（11 ok / 0 failed）<span class="tag m1">实测</span>。</p>
+  <div class="stack">
+    <div><b>① 意图闸口</b>　必填三要素缺失即返回澄清话术，先于任何模型调用发生</div>
+    <div class="dn">↓ 需求齐备才往下</div>
+    <div><b>② 编排层 · LangGraph StateGraph</b>　规划 / 执行 / 审校多角色分工，状态与中断点可回放</div>
+    <div class="dn">↓ 按步骤取用工具</div>
+    <div><b>③ 工具层 · Function-Calling + MCP Server</b>　7 个插件在服务端注册，对外按标准协议暴露</div>
+    <div class="dn">↓ 专业知识由能力包供给</div>
+    <div><b>④ 能力包层 · 3 个 Skill</b>　把文旅专业知识写成可版本化、可复用的文件，注入提示词生效</div>
+  </div>
+  <h2>3.2 三个 Skill：把文旅专业知识做成可调用的能力包</h2>
+  <div class="grid">
+    <div class="card txt"><b>tourism-advisor</b><span>咨询与规划：景点 / 住宿 / 餐饮 / 节奏 / 消费点五项策略成表，行程按画像落结构而不是换措辞</span></div>
+    <div class="card txt"><b>tourism-marketing</b><span>内容与文创：五类成文规格、合规口径与数字名片形态写进能力包，出稿即平台可发版本</span></div>
+    <div class="card txt"><b>smart-matching</b><span>客源匹配：六类客群画像与「需求→产品→转化策略」流水线，实测加载 6 类画像</span></div>
+  </div>
+  <p>三个 Skill 按 <span class="mono">SKILL.md</span> 规范组织在 <span class="mono">skills/</span> 目录，与插件、MCP 工具是三层不同的东西：
+    插件管取数，工具管调用，Skill 管「这一行该怎么做才专业」。复现：起服务后
+    <span class="mono">curl http://127.0.0.1:5050/api/health</span> 返回插件 7 / Skill 3 / 客群 6<span class="tag m1">实测</span>。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">8 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">技术创新点 · 上下文与数据分层</span></div>
+  <h2>3.3 长对话上下文：把 token 从「线性膨胀」变成「预算内恒定」</h2>
+  <p>旧做法固定取最近 20 条历史，长对话必然带来上下文膨胀、早期硬约束丢失与漂移。本系统给输入 token 上硬预算：
+    <span class="mono">CTX_BUDGET = 24000</span>，最近 4 轮无条件必保（宁可超预算也不断裂），更旧轮次贪心装入，
+    装不下则折叠进滚动摘要（压成 ≤150 字，硬上限 300 字）；摘要与已确认事实（目的地 / 天数 / 预算 / 人群）落库，
+    <b>服务重启不会「首轮失忆」</b>。占用到 75% 自动压缩并显示进度条。零第三方依赖：不引入分词器与向量库，
+    CJK 每字≈1、其余 len/4 保守近似，宁可高估不超发。</p>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 21%"><b>24,000</b><span>输入 token 硬预算上限，超出即压缩而不是无限带历史</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>最近 4 轮</b><span>无条件必保，早期硬约束不会在第 N 轮被挤掉</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>≤150 字</b><span>更旧轮次折叠进滚动摘要，摘要与事实落库不丢</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>75% 水位</b><span>自动压缩并在界面显示进度条，聊得多长看得见</span></div>
+  </div>
+  <h2>3.4 数据来源分层：把「可信度」做成系统属性，而不是一句提示词</h2>
+  <div class="stack">
+    <div><b>① 美团实时数据</b>　门票价格、商户评分、dpurl.cn 购票深链——真实、可下单</div>
+    <div class="dn">↓ 不可用 / 超时 / 无结果</div>
+    <div><b>② 高德 Web 服务</b>　POI 地址与电话、图片、天气、地图与路线规划</div>
+    <div class="dn">↓ 无覆盖</div>
+    <div><b>③ 抖音实时热点</b>　经接口进入灵感库与门户展示，卡片带真实热度值</div>
+    <div class="dn">↓ 全部不可用</div>
+    <div><b>④ 本地知识库（最后兜底）</b>　仅在前述均不可用、且库内确有该城市真实数据时生效</div>
+  </div>
+  <p>每张结果卡片都带 <span class="mono">source</span> 与 <span class="mono">source_detail</span> 徽标，
+    标明数据来自哪个接口、哪次查询，可展开核验；图片按「美团实拍 → 高德 POI 图」优先级取用，两源皆无时置
+    <span class="mono">image_missing</span> 显示「暂无图片」占位，价格取不到时标注「暂未核实」并给替代建议。</p>
+  <p><b>全链路绝不编造图片与价格</b>，且每次调用均留痕（<span class="mono">data/logs</span> +
+    <span class="mono">operation_logs</span>）可回溯——分层不是为了让数据好看，是为了让每一格都能被追问到出处。</p>
+  <p class="note">分层顺序是取舍不是偏好：本地库最容易做也最好看，但把「库里有」当成「真实」就会把过期数据写成结论，
+    因此它只作最后兜底，且只在库内确有该城市数据时生效。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">9 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">技术创新点 · 闸口与成本</span></div>
+  <h2>3.5 三道闸口 + 「降级不静默」</h2>
+  <ul class="tight">
+    <li><b>第一道 · 输入闸口</b>：必填三要素缺失即返回澄清话术，先于任何生成发生。</li>
+    <li><b>第二道 · 数据闸口</b>：价格 / 图片 / 开放时间只认实时接口与库内真实数据，缺失走占位与「暂未核实」。</li>
+    <li><b>第三道 · 输出闸口</b>：模型输出经 <span class="mono">validation</span> 校验（绝对化用语、无来源价格、编造图片链接），
+      问题以 SSE 事件如实下发给前端，而不是悄悄改掉。</li>
+  </ul>
+  <p>校验环节本身也可能出错，因此它按环节兜住，把
+    <span class="mono">runs / issues / degraded_runs / by_stage / last_error</span> 聚合进面板——能看到「哪一环掉过几次」，而不是把一次降级吞成正常通过。回归 <span class="mono">test_validation_degrade.py</span> 42 项<span class="tag m1">实测</span>。</p>
+  <h2>3.6 检索出处可见：没有命中就不出标注</h2>
+  <p>本地知识库走 BM25 + 向量的混合检索。每轮答复若命中库内片段，后端下发 <span class="mono">sources</span> 事件、
+    前端渲染「参考来源」卡片，标题与出处可点验；<b>没有命中就不出标注</b>，不做「看起来有出处」的假标注。
+    回归 <span class="mono">test_rag_sources.py</span> 38 项<span class="tag m1">实测</span>。
+    如实说明：混合检索已在请求路径接线，当前面板状态为 <span class="mono">wired_idle</span>（不称「已命中」）。</p>
+  <h2>3.7 成本可控：真实计量 + 前缀缓存 + 生图指纹复用</h2>
+  <p>成本由测量脚本打本机真实接口、每场景前后各读一次计量取差值得到，<b>不按公开单价推算</b>。
+    两项实测有效的降本机制：① <b>提示词前缀稳定化</b>——分钟级时钟、IP 定位、Skill 正文这类每轮都变的值一律移到末尾，头部逐字不动，使后续轮次命中上游上下文缓存，输入 token 中 37.3% 按命中价计费；
+    ② <b>生图参数指纹复用</b>——model / size / prompt 规范化后取 sha256 作指纹，命中即复用已落盘图片、不发网络请求，同一张图不付第二次钱。模型单价只走环境变量；未配置时只报 token 不报金额。</p>
+  <div class="chart">
+    <div class="donut" style="background: conic-gradient(#c2410c 0 37.3%, #e6ddcc 37.3% 100%)">
+      <em>37.3%<small>按缓存命中价计费</small></em>
+    </div>
+    <div class="leg" style="flex:1">
+      <div><i style="background:#c2410c"></i>4 个场景 · 7 次模型调用，全部带回真实 usage</div>
+      <div><i style="background:#e6ddcc"></i>输入合计 10,282 tokens，其中缓存命中 3,840</div>
+      <div><i style="background:#a63a12"></i>estimated_calls = 0：没有一个 token 来自字符折算</div>
+      <div><i style="background:#17705c"></i>7 轮改需求溢出用例：输入稳定压在 4.5k–7.8k</div>
+    </div>
+  </div>
+  <p class="note">这意味着第 N 轮请求不会因为历史变长而线性涨价，费用与延迟因此可预期<span class="tag m1">实测</span>。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">10 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">技术创新点 · 模型层与工程方法</span></div>
+  <h2>3.8 模型层：运行期热切换 + 两级容错</h2>
+  <p>国产大模型的可用性会变（限流、调价、欠费、接口调整），因此模型不写成编译期依赖：
+    DeepSeek / 智谱 / 通义 / Kimi 经 <span class="mono">/api/config</span> 与 <span class="mono">/api/providers</span> 运行期热切换，
+    默认 <span class="mono">deepseek-chat</span>，配置目录不进提交包。发送层另加退避重试
+    （1 次、1.5s 退避，只对 timeout / network / busy / server 四类可重试错误生效）与备用通道
+    （<span class="mono">SMARTTOURISM_LLM_FALLBACK_BASE_URL / _KEY / _MODEL</span>）——主通道故障时改道，而不是把错误直接抛给用户。
+    非流式 120s、流式 180s，流式另有看门狗，超时按中断处理并保留已生成部分。</p>
+  <p>数据侧与生图侧同样按「会失败」设计：美团接口 timeout 30s、结果缓存 TTL 300s、stale 上限 24h（实测上游 11–44s），
+    故障时回退最近一次成功数据并在提示词里标明「这是多久前的数据、仅供参考」，<b>绝不拿旧价假装实时价</b>；
+    高德按锁 + 最小间隔 0.16s + 3 次尝试封装限流；生图统一走火山方舟 Seedream，带参数自适应重试与
+    「场景 Key 欠费回落共享 Key」两级容错，并把生图 150s / 拉图 60s / 前端 abort 215s 对齐，
+    修掉「上游已计费、本地先放弃」的错位。这一层的回归为 <span class="mono">test_llm_retry</span> 57 项、
+    <span class="mono">test_dao_guard</span> 40 项、<span class="mono">test_hotpath_degrade</span> 39 项、
+    <span class="mono">test_concurrency</span> 22 项<span class="tag m1">实测</span>。</p>
+  <h2>3.9 AI Coding 开发实践：AI 起草，人做主</h2>
+  <p>本项目用 AI Coding 完成主要编码，但质量不以生成代码量、对话轮次或 token 消耗计，而以「理解代码、能验证、能维护」为准。
+    下面四类缺陷都不是编译或接口自检发现的，而是人工回溯调用链、逐段审查与校对报告时发现的。</p>
+  <div class="cap">表 3-1　人工审查发现的典型缺陷与处置</div>
+  <table>
+    <tr><th style="width:28%">缺陷</th><th style="width:24%">为何自检漏过</th><th>处置与教训</th></tr>
+    <tr><td>新路由插在 Flask 路由函数体中间，原路由静默失效</td><td><span class="mono">py_compile</span> 通过，接口也未报错</td><td>编译通过 ≠ 路由存在；改为核对 <span class="mono">@app.route</span> 函数边界并逐条统计路径</td></tr>
+    <tr><td>「建了 15 个 Agent 模块」容易被讲成「上线了 15 项能力」</td><td>模块都能 import、单测都过，但没进请求路径</td><td>接线状态做成面板可观测的 <span class="mono">wired / unwired</span> 计数；能力清单以请求路径为准，不以 import 过为准</td></tr>
+    <tr><td>成本章节用「估算」写得像实测</td><td>估算口径本身合理，但读者会当结论用</td><td>改为测量脚本打本机真实接口、逐场景采 usage，整章换成【实测】；单价移出代码走环境变量</td></tr>
+    <tr><td>示例 API Key 以字面量写在源码里</td><td>清洁化正则没覆盖「裸 32 位十六进制」，当时的「敏感信息 0 残留」是假的</td><td>字面量移出源码、只存 sha256 指纹；自检补特征并对命中值掩码预览；新增 47 项凭据用例锁住这条线</td></tr>
+  </table>
+  <p class="note">另一处分工也能说明同一件事：上下文模块 AI 给出的是分层记忆通用方案（引入分词器与向量库），
+    人工按本项目「零第三方依赖」的约束改为保守近似（CJK 每字≈1、其余 len/4，宁可高估不超发）加「最近 4 轮无条件必保」。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">11 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">实用性与落地 · 已建成功能</span></div>
+  <h1 class="ch">4　实用性与落地验证</h1>
+  <p>本章按界面入口逐页展开：每一项约束、每一类客群策略、每一份产出的构成，都取界面与源码里的原文，
+    不写「智能规划、个性推荐」这类无法追问的概括词。</p>
+  <h2>4.1 功能总览：六个界面入口</h2>
+  <div class="cap">表 4-1　界面入口 · 界面上做得出来的事 · 已接线的后端接口</div>
+  <table>
+    <tr><th style="width:11%">入口</th><th style="width:47%">界面上做得出来的事</th><th>已接线的后端接口</th></tr>
+    <tr><td>首页</td><td>热门灵感橱窗六张卡与详情弹层、今日运营看板三张 KPI、实时热点机会 TOP 10、四条能力入口</td><td><span class="mono">/api/portal/hot-showcase</span> · <span class="mono">/api/portal/hot-reviews</span> · <span class="mono">/api/ops/dashboard</span></td></tr>
+    <tr><td>对话</td><td>多会话并行、流式答复、停止生成、重新生成与编辑重发、点赞点踩、语音输入、参考来源与结尾推荐卡片</td><td><span class="mono">/api/chat</span> · <span class="mono">/api/chat/stop</span> · <span class="mono">/api/feedback</span> · <span class="mono">/api/sessions</span> · <span class="mono">/api/recommend/cards</span></td></tr>
+    <tr><td>规划</td><td>十二项约束一次填清、缺要素先追问、按意见就地重规划、十一部分完整行程、推荐卡片与地图导航、保存与导出</td><td><span class="mono">/api/plan</span> · <span class="mono">/api/recommend/cards</span> · <span class="mono">/api/map/poi-search</span> · <span class="mono">/api/user/booking</span></td></tr>
+    <tr><td>营销</td><td>六类内容一键生成、内容板逐块取舍、文创灵感库、数字名片与二维码、AI 概念海报与同图复用</td><td><span class="mono">/api/marketing</span> · <span class="mono">/api/creative</span> · <span class="mono">/api/cards</span> · <span class="mono">/api/ark/generate</span></td></tr>
+    <tr><td>社区</td><td>攻略笔记流与详情、四维筛选（平台 / 城市 / 主题 / 人群）、主题灵感与社区精选、点击率与收藏排行</td><td><span class="mono">/api/xhs/notes</span> · <span class="mono">/api/market/hot-inspirations</span> · <span class="mono">/api/social/hotspots</span></td></tr>
+    <tr><td>我的</td><td>登录注册与图形验证码、三条内容链路（行程 / 营销内容 / 保存的攻略）、整包数据导出</td><td><span class="mono">/api/auth/captcha</span> · <span class="mono">/api/user/profile</span> · <span class="mono">/api/export/mine</span></td></tr>
+  </table>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 21%"><b>6 个视图</b><span>顶部导航即可点开的六个入口</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>85 条路径</b><span>服务端唯一 REST 路径</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>17 张表</b><span>SQLite 本机建表脚本</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>4 个独立页</b><span>地图 · 名片 · 移动端 · 面板</span></div>
+  </div>
+  <div class="panel warn">六个视图之外，还有四个由服务端路由直接托出的独立页：<span class="mono">/map</span> 全屏地图、
+    <span class="mono">digital-card.html</span> 名片落地页、<span class="mono">/m</span> 移动端、<span class="mono">/admin</span> 运维面板。
+    功能边界如实分开：社区发布与攻略收藏只写在这台浏览器的本地存储，不称其入库，社区也只有收藏、没有点赞；
+    <span class="mono">/api/tickets</span>、<span class="mono">/api/stats</span>、<span class="mono">/api/match</span> 等接口没有界面入口；拍照识景未做。
+    口径：以 <span class="mono">dashboard/index.html</span> 的六个 <span class="mono">data-page</span> 视图与前端实际调用点为准<span class="tag m1">实测</span>。</div>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">12 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">功能详解 · 规划入口</span></div>
+  <h2>4.2 规划：能针对哪些人群、能设哪些约束、能交付什么</h2>
+  <p>规划页把出行条件一次问清，缺关键项先追问再动笔；出稿后不只是一张观光清单，还带着消费触点与可当场执行的后续动作。</p>
+  <div class="cap">表 4-2　规划功能的输入、产出与后续动作</div>
+  <table class="xroomy">
+    <tr><th style="width:17%">环节</th><th>能力范围</th></tr>
+    <tr><td>可针对的人群</td><td>情侣/伴侣、亲子家庭、朋友/闺蜜、银发同行、商务差旅、团建团队、独自旅行七类同行关系；每类在策略库里各有景点、住宿、餐饮、节奏与消费触点的成文取值，换人群换的是行程结构而不是措辞<span class="tag m1">实测</span></td></tr>
+    <tr><td>可设的约束</td><td>十二项：目的地城市、出行天数、预算档、同行关系、消费倾向、路线节奏、出行方式，两组多选（偏好标签、行为画像），三项自由文本（多人偏好差异、重点促进消费、不想要 / 特殊需求）；目的地、天数、同行关系为必填，缺项返回澄清清单并声明可先出一版草案</td></tr>
+    <tr><td>交付的产出</td><td>一次输出十一个部分：画像与冲突、假设与数据来源、行程总览、每日安排、偏好平衡、消费转化、文创伴手礼、三档预算、异常与替代路线、适配理由、地图路线；直接可读的排在前面，依据类可展开</td></tr>
+    <tr><td>价格与时间口径</td><td>美团票价与住宿价、高德天气在生成前采集并优先采用；取不到实时数据时明写「暂未获取到实时数据」，模型推断值一律标注来源，禁止不标来源直接输出价格</td></tr>
+    <tr><td>生成之后</td><td>按意见就地重规划（不重填条件）、保存到个人行程、导出文本与手账、分享、按路线生成推荐卡片、地图导航与地名点击联动</td></tr>
+  </table>
+  <div class="flow">
+    <div><b>① 填写条件</b>12 项约束一次问清</div>
+    <div class="ar">→</div>
+    <div><b>② 缺项澄清</b>必填缺失先追问</div>
+    <div class="ar">→</div>
+    <div><b>③ 实时采集</b>票价 · 住宿价 · 天气</div>
+    <div class="ar">→</div>
+    <div><b>④ 分段出稿</b>11 个部分流式生成</div>
+    <div class="ar">→</div>
+    <div><b>⑤ 后续动作</b>重规划 · 保存 · 导出</div>
+  </div>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 21%"><b>7 类人群</b><span>同行关系各有成文策略</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>12 项约束</b><span>三项必填，缺项先追问</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>11 个部分</b><span>缺一个部分就算残缺</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>6 类动作</b><span>从重规划到地图导航</span></div>
+  </div>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">13 / 21</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">功能详解 · 对话入口</span></div>
+  <h2>4.3 对话：十项答复控制与结尾推荐</h2>
+  <p>对话页首屏给六个快捷场景与四条示例提问，输入框限 4,000 字、Enter 发送；答复控制一共十项，逐项都不是摆设：</p>
+  <div class="cap">表 4-3　对话页可用的十项控制</div>
+  <table class="roomy">
+    <tr><th style="width:18%">控制</th><th>界面上的具体行为</th></tr>
+    <tr><td>新建对话</td><td>「+」开新会话；历史会话一条都不动（此约束写成 76 项断言）</td></tr>
+    <tr><td>历史对话</td><td>「🕘」列出会话，支持重命名与删除；服务端列表按用户隔离，本机留档上限 30 会话 × 60 条</td></tr>
+    <tr><td>停止生成</td><td>「⏹ 停止」真停上游流并释放线程，半截答复标注「这条答复被手动停止，内容不完整」后落库</td></tr>
+    <tr><td>重新生成</td><td>「🔄」只撤回这一轮并重发，比对不上就不删，避免误删历史</td></tr>
+    <tr><td>编辑重发</td><td>「✎」把原始提问放回输入框，改后重发</td></tr>
+    <tr><td>点赞 / 点踩</td><td>「👍 有用」「👎 不对」落库，点踩再选原因（没答到点上 / 信息不准确 / 太啰嗦），回放时投票状态不丢</td></tr>
+    <tr><td>参考来源</td><td>「📚 参考来源（N）· 本地知识库检索」逐条列出命中片段与相关度百分比；没有命中就不出标注，不装成检索过</td></tr>
+    <tr><td>语音输入</td><td>「🎤」录音并转写，显示「正在录音，请说话…」；上游不可用时给中文可读原因，不甩原始报错</td></tr>
+    <tr><td>上下文水位</td><td>「🧩 上下文」进度条显示本会话 token 占用，到 75% 触发线自动压缩早期轮次为摘要</td></tr>
+    <tr><td>定位与修正</td><td>进入对话即尝试定位并显示「定位中…」，可点「修正」手工改城市、「重新定位」再取一次——城市决定后续推荐与天气口径</td></tr>
+  </table>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 21%"><b>6 个场景</b><span>行程规划 / 酒店推荐 / 美食探索 / 营销文案 / 亲子出游 / 文创伴手礼</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>4,000 字</b><span>单条输入长度上限</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>30 × 60</b><span>本机留档：会话数 × 每会话消息数</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>75%</b><span>上下文占用触发自动压缩的水位线</span></div>
+  </div>
+  <p>每条答复结尾挂一段推荐面板：景点 / 美食 / 酒店三组，标注数据优先级，默认先露 3 张，
+    同一城市的聚合结果做缓存不重复付费<span class="tag m1">实测</span>。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">17 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">功能详解 · 营销入口</span></div>
+  <h2>4.4 营销：六类内容、内容板与数字名片</h2>
+  <p>营销页左侧是完整的条件表单，出稿前把「给谁看、在哪发、促什么」都问清楚。</p>
+  <div class="cap">表 4-4　营销生成表单的可选值（界面原文）</div>
+  <table class="roomy">
+    <tr><th style="width:18%">字段</th><th>可选值</th></tr>
+    <tr><td>内容类型</td><td>社交媒体文案 / 公众号推文 / 短视频脚本 / 海报文案 / 活动策划 / 文创产品概念——每类的成文结构单独规定，短视频脚本要求前 3 秒制造停留，不搞一类模板套六样</td></tr>
+    <tr><td>目标客群</td><td>自动识别 / 亲子家庭 / 情侣蜜月 / 银发一族 / 公司团建 / 大学生 / 商务出差</td></tr>
+    <tr><td>风格调性</td><td>时尚潮流 / 文艺清新 / 幽默风趣 / 专业深度 / 温暖治愈</td></tr>
+    <tr><td>目的地 / 产品</td><td>文本，界面示例「杭州西湖」——决定文案写的是地点还是具体单品</td></tr>
+    <tr><td>主推产品 / 产品线</td><td>文本，示例「夜游船票 + 双人下午茶 + 香囊礼盒」，把「这篇推什么」写成条件而不是让模型猜</td></tr>
+    <tr><td>投放渠道</td><td>文本，示例「小红书、抖音、公众号、OTA」，决定成文的平台适配版本</td></tr>
+    <tr><td>经营目标 / 转化目标</td><td>两项文本：前者示例「提升七夕情侣套餐预订与文创加购」，后者示例「购票、预约、到店、文创加购」——一个管要什么结果，一个管希望用户当场做哪个动作</td></tr>
+    <tr><td>补充说明</td><td>自由文本，用于写清卖点、特色与限制</td></tr>
+    <tr><td>海报开关</td><td>勾选框「同时为形象款文创生成 AI 概念海报（需配置火山方舟 API Key）」，只在选中特定内容类型时才出现</td></tr>
+    <tr><td>同页子面板</td><td>旅游推广博客生成（五种博客风格、五类目标读者）与文创灵感库（国潮 / 非遗 / 博物馆 / 文创 IP / 节庆 / 景区特产，可「提取灵感填充营销」）</td></tr>
+  </table>
+  <p>出稿后有「内容板」逐块取舍：每段可保存 / 修改 / 丢弃，处理完再复制全部已保存内容；留档按用户存在本机，上限 30 条，
+    可在「我的 · 我的营销内容」回看。只有「文创产品概念」这一类会出「转化为数字名片」按钮——名片页带二维码与七个板块，
+    印到包装上即扫码直达。勾选后另走 AI 概念海报生图，同一张图命中指纹时不重复计费<span class="tag m1">实测</span>。</p>
+  <p class="note">合规口径写在提示词与能力规格里（分平台的成文结构、广告法极限词约束），运行时由输出护栏对绝对化用语做检查并计入面板指标；界面上没有独立的「合规检查」按钮，不把它说成一键功能。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">18 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">功能详解 · 首页 / 社区 / 我的</span></div>
+  <h2>4.5 首页、社区与我的：把容易被夸大的地方写明白</h2>
+  <div class="cap">表 4-5　三个入口界面上具体有什么、数据从哪来</div>
+  <table class="xroomy">
+    <tr><th style="width:12%">入口</th><th style="width:48%">界面上具体有什么</th><th>数据来源与留档口径</th></tr>
+    <tr><td>首页</td><td>热门灵感橱窗六张卡（景点 / 文创 / 餐食 / 夜游 / 住宿 / 非遗市集）与详情弹层，今日运营看板三张 KPI 卡，实时热点机会 TOP 10，今日建议任务，四条能力入口</td><td>看板走 <span class="mono">/api/ops/dashboard</span> 聚合热点、灵感库与票务；KPI 值（目的地热度 / 咨询转化 / 内容机会）按公式算出，是相对量而非转化率实测；橱窗首屏文案为内置示例，评价流由 <span class="mono">/api/portal/hot-reviews</span> 异步替换为真实平台评价</td></tr>
+    <tr><td>社区</td><td>攻略笔记流与详情页、平台 / 城市 / 主题 / 人群四维筛选与搜索、主题灵感与社区精选、点击率排行与收藏排行、「发布旅游心得」表单（标题 / 标签 / 正文三项）</td><td>笔记流来自 <span class="mono">/api/xhs/notes</span>（灵感库真实落库，只存公开入口、摘要与标签，完整内容跳转原平台），热点更新走 <span class="mono">/api/market/hot-inspirations</span>；首屏四条为内置示例，用户发布与收藏只写本机 localStorage，不入库、无点赞</td></tr>
+    <tr><td>我的</td><td>三条内容链路：我的行程、我的营销内容、我保存的攻略，底部一键「导出我的全部数据」，删除前逐条二次确认</td><td>行程读 SQLite 并可删（带所有权校验）；营销留档与收藏攻略来自本机存储，导出时一并合并进同一个 JSON 文件，文件名带日期，导出后提示会话 / 消息 / 行程 / 本地留档各多少条</td></tr>
+    <tr><td>登录</td><td>顶部导航「登录」弹层：登录 / 注册两个页签、账号密码与 4 位图形验证码（点图可刷新），登录状态一句话写明「已登录 · 数据仅本机保存」</td><td>验证码走 <span class="mono">/api/auth/captcha</span>，令牌存本机；未登录也能完整使用，只是专属行程与收藏不落地——把游客态做成可用态，而不是拦在门外</td></tr>
+  </table>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 21%"><b>6 张橱窗卡</b><span>景点 / 文创 / 餐食 / 夜游 / 住宿 / 非遗，点击进详情</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>3 张 KPI 卡</b><span>目的地热度 / 咨询转化 / 内容机会，公式相对量</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>4 维筛选</b><span>平台 / 城市 / 主题 / 人群，附搜索与排行</span></div>
+    <div class="card txt" style="flex:1 1 21%"><b>1 个文件</b><span>整包导出：会话、消息、行程、本机留档</span></div>
+  </div>
+  <p>「内置示例」「公式计算的看板值」「只写本机的留档」这三件事最容易被说成实时数据与真实转化率，
+    这里把口径摊开，可在同一页对着网络请求逐条核对哪一句成立<span class="tag m1">实测</span>。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">19 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">实用性 · 规模与部署</span></div>
+  <h2>4.6 工程规模与质量</h2>
+  <div class="cap">表 4-6　规模、质量与实测口径（数值取自源码逐文件统计与全量回归）</div>
+  <table class="mroomy">
+    <tr><th style="width:24%">指标</th><th style="width:20%">数值</th><th>口径与复现方式</th></tr>
+    <tr><td>服务端规模</td><td>63 个文件 · 30,005 行</td><td>递归统计 <span class="mono">server/*.py</span>；其中测试 9,689 行，业务实现约 20,316 行</td></tr>
+    <tr><td>接口与数据</td><td>85 条唯一 REST 路径 · 17 张数据表</td><td>对 <span class="mono">@app.route</span> 声明逐条统计（91 个声明按方法拆分）；表结构见 SQLite 建表脚本</td></tr>
+    <tr><td>插件与 Skill</td><td>7 个插件 · 3 个 Skill · 6 类画像</td><td><span class="mono">plugins/</span> 统一继承 BasePlugin；<span class="mono">skills/</span> 按 SKILL.md 规范组织</td></tr>
+    <tr><td>自动化回归</td><td>36 个测试文件 · 1,716 项断言全绿</td><td><span class="mono">python run_tests.py</span>，实测于 2026-10-05</td></tr>
+    <tr><td>前端形态</td><td>零框架单页 10,440 行</td><td><span class="mono">dashboard/index.html</span>，唯一外链为本地脚本</td></tr>
+    <tr><td>运行依赖</td><td>4 核心 + 4 可选，最小启动集 3</td><td>按 <span class="mono">requirements.txt</span> 逐行标注</td></tr>
+    <tr><td>作品材料</td><td>介绍 PPT 35 页 · 报告 34 页 + 精简版 21 页</td><td>由 <span class="mono">make_report.py</span> 与 <span class="mono">_deck/_build.py</span> 生成，可当场重印</td></tr>
+    <tr><td>红线自检</td><td>敏感信息 0 残留 · 参赛规范 0 命中</td><td><span class="mono">prepare_submission.py</span> 排除本机产物与配置目录后做特征扫描</td></tr>
+  </table>
+  <h2>4.7 部署与运行：现场可当场验证</h2>
+  <p>双击 <span class="mono">start.bat</span> 即以 waitress 生产级 WSGI 起服务（监听 <span class="mono">127.0.0.1:5050</span>），
+    浏览器打开即为完整应用，无需构建前端与数据库服务；<b>不配置任何模型 Key 时不白屏</b>，降级为本地知识库兜底并给中文可读原因，
+    断网与欠费场景都实测过<span class="tag m1">实测</span>。
+    <span class="mono">/admin</span> 面板实时显示模型用量、缓存命中、生图张数与复用率、答复质量与降级计数，带阈值告警。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">13 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">实用性 · 质量保障与量级</span></div>
+  <h2>4.8 测试怎么组织：按主题分文件，断言只打真实行为</h2>
+  <p>36 个测试文件按主题拆分而非按代码目录镜像，每个文件对应一条能被当场追问的能力，跑在子进程里隔离；
+    断言只打<b>可观测的真实行为</b>——落库字段、SSE 事件序列、面板计数、响应结构，不打内部实现。
+    「新建对话绝不能删除历史会话」这条来自真实事故的约束写在 <span class="mono">test_session_management</span> 里，
+    <span class="mono">test_secret_hygiene</span> 47 项把「源码里不许出现裸 Key」锁成一条会失败的测试。</p>
+  <h2>4.9 量级对照：只给口径，不给百分比</h2>
+  <p>AI 侧耗时是打真实接口计时的<span class="tag m1">实测</span>，人工侧基线是本项目的<span class="tag m3">经验估计</span>。
+    两者并排只为了让量级可感，<b>本项目未做人工对照实验，因此不给「效率提升 N%」这类结论</b>。</p>
+  <div class="cap">表 4-7　同类任务量级对照</div>
+  <table class="roomy">
+    <tr><th style="width:38%">任务</th><th style="width:24%">人工基线</th><th>本系统</th></tr>
+    <tr><td>一条 3 天行程（含票价、路线、雨天替代）</td><td>2–4 小时 / 份</td><td>50.03s · 输出 1,444 字</td></tr>
+    <tr><td>一篇平台化营销文案（含合规检查）</td><td>1–2 小时 / 篇</td><td>6.66s · 首字 1.21s · 成文 1,227 字</td></tr>
+  </table>
+  <p class="note">人工基线口径：按单人查攻略、核对营业时间与多平台排版估时，未做对照实验，故只作数量级参考，不作结论<span class="tag m4">预期</span>。</p>
+  <div class="cap">表 4-8　回归按主题分布（项数为所列各测试文件的断言数，取自 <span class="mono">python run_tests.py</span> 逐文件输出）</div>
+  <table>
+    <tr><th style="width:17%">主题</th><th>测试文件（项数）</th><th style="width:24%">覆盖点</th></tr>
+    <tr><td>对话控制</td><td>session_management(76) · stream_stop(71) · regenerate(44) · feedback_metrics(112)</td><td>会话隔离、真停、只撤一轮</td></tr>
+    <tr><td>真实性与出处</td><td>validation_degrade(42) · rag_sources(38)</td><td>闸口、降级、出处标注</td></tr>
+    <tr><td>成本与计量</td><td>llm_usage(55) · prompt_cache(42) · image_cost(71)</td><td>usage、命中、生图复用</td></tr>
+    <tr><td>稳健性与并发</td><td>llm_retry(57) · dao_guard(40) · hotpath_degrade(39) · concurrency(22) · meituan_cache(114)</td><td>重试与备用通道、护栏</td></tr>
+    <tr><td>业务与界面</td><td>profile_center(78) · portal_showcase(57) · data_export(50) · ops_log(60) · secret_hygiene(47)</td><td>栏目、导出、凭据自检</td></tr>
+    <tr><td>其余两组</td><td>context_manager(57) · memory(79)；另有 Agent 能力库 11 个文件（tools / graph / multi_agent / hitl / mcp_server / tracing / structured_output / graphrag / model_router / evaluation / agent_modules）</td><td>上下文与记忆 136 项、Agent 能力库 317 项；七组合计 1,716 项 / 36 个文件 / 0 失败</td></tr>
+  </table>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">14 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">实用性 · 数据主权与判断</span></div>
+  <h2>4.10 数据主权与可交付性</h2>
+  <p>全部数据仅存本机：结构化数据在 SQLite，前端状态按用户命名空间存 localStorage，
+    <span class="mono">/api/export/mine</span> 一键导出整包；个人中心只保留三条能追到库里数据的链路，
+    没有真实数据来源的「订单 / 酒店 / 机票」入口一律不做。</p>
+  <div class="grid" style="gap:2.4mm">
+    <div class="card txt" style="flex:1 1 30%"><b>17 张表</b><span>SQLite 本机持久化：账号与令牌、会话与记忆、行程、营销内容、反馈与运维计数</span></div>
+    <div class="card txt" style="flex:1 1 30%"><b>按用户隔离</b><span>前端状态存 localStorage 的用户命名空间，不跨账号串数据</span></div>
+    <div class="card txt" style="flex:1 1 30%"><b>一条命令</b><span>整包导出：行程、会话、收藏、营销内容、反馈，数据跟着人走</span></div>
+  </div>
+  <div class="cap">表 4-9　17 张数据表按用途分布（取自 SQLite 建表脚本）</div>
+  <table>
+    <tr><th style="width:18%">用途</th><th style="width:52%">表名</th><th>承接的功能</th></tr>
+    <tr><td>账号与会话</td><td><span class="mono">users · auth_tokens · sessions · messages · session_state · memories · message_feedback</span></td><td>登录、多会话、上下文与反馈</td></tr>
+    <tr><td>行程与内容</td><td><span class="mono">itineraries · marketing_contents · user_store</span></td><td>我的行程、营销留档、消费触点</td></tr>
+    <tr><td>数据与素材源</td><td><span class="mono">travel_cities · travel_pois · xhs_notes · imported_sources</span></td><td>本地知识库兜底、社区笔记</td></tr>
+    <tr><td>运维与成本</td><td><span class="mono">operation_logs · coupon_claims · ark_image_cache</span></td><td>调用留痕、生图指纹复用</td></tr>
+  </table>
+  <h2>4.11 实用性判断：三条能证成，三条不承诺</h2>
+  <ul class="tight roomy">
+    <li><b>能证成</b>：产出可直接使用（行程含开放时间、票价来源标注、购票深链与替代路线；文案含平台适配与合规口径）。</li>
+    <li><b>能证成</b>：成本与延迟可预期（输入预算硬上限 + 缓存命中实测 + 生图不重复计费）。</li>
+    <li><b>能证成</b>：出错可追（每次调用留痕、降级进面板计数、回归覆盖到具体文件与项数）。</li>
+    <li><b>不承诺</b>：转化率与获客收益、人工替代比例、商业化收入——这三类需对照实验或真实投放数据，未做，故不给数字。</li>
+  </ul>
+  <p>三条「能证成」各有当场可走的验证路径：票价与深链看 <span class="mono">/api/plan</span> 返回、
+    token 与缓存命中看 <span class="mono">/api/admin/ops</span>、留痕看 <span class="mono">operation_logs</span>；
+    三条「不承诺」写进限制而不是写进亮点。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">15 / 17</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">已知边界与复现方式</span></div>
+  <h1 class="ch">5　已知边界与复现方式</h1>
+  <h2>5.1 已知限制</h2>
+  <ul class="tight roomy">
+    <li><b>首字延迟偏高</b>：行程场景首字 40.99s，因前置采集（定位 / 实时数据 / 检索）在生成之前。
+      是否改为流式优先属产品决策，当前未实现，不粉饰为已优化。</li>
+    <li><b>生图依赖上游账户额度</b>：欠费时出图直接失败，系统回退占位图并写明原因、可重试，不假称成功。</li>
+    <li><b>混合检索当前为空闲状态</b>：已在请求路径接线，但面板实例未触发索引构建，故标注为空闲而非已命中。</li>
+    <li><b>成本样本量有限</b>：实测成本来自 4 个场景 7 次调用的单次进程累计，代表「这一遍跑出来的量」，不是大样本统计。</li>
+    <li><b>无交易闭环</b>：只提供官方购票深链，不代下单、不接支付，无法声称闭环成交能力。</li>
+    <li><b>多人偏好平衡靠规则承接</b>：同行人群含多种偏好时，由提示词规则与固定输出模块处理，未实现独立的偏好求解算法。</li>
+    <li><b>校验层只证来源、不证对错</b>：<span class="mono">validation</span> 覆盖绝对化用语、无来源价格与编造图片链接，
+      词表与正则的覆盖始终有限，故其通过率只当过程计数，不当质量结论。</li>
+    <li><b>单文件体量偏大</b>：<span class="mono">app.py</span> 7,684 行、前端单页 10,440 行，可读性与可维护性是明确技术债，列为后续拆分项。</li>
+  </ul>
+  <h2>5.2 数据口径约定</h2>
+  <p>全文数字分三类并逐条标注：<b>实测</b>——由脚本或面板读自真实运行系统，附复现命令；
+    <b>估算</b>——口径公开可复核；<b>预期</b>——尚未验证的目标或经验基线，
+    尤其是人工耗时对照，只作假设不作结论。三类不混用、不互相冒充。</p>
+  <div class="grid">
+    <div class="card g txt"><b>实测</b><span>读自运行中的系统：回归项数、面板计数、逐场景 token 与延迟，均可一条命令复现</span></div>
+    <div class="card txt"><b>估算</b><span>口径公开可复核，如按字与按调用次数的保守折算，只用于比较不用于结论</span></div>
+    <div class="card txt"><b>预期</b><span>尚未验证的目标与经验基线，如人工耗时对照，写在限制里而不是亮点里</span></div>
+  </div>
+  <p class="note">本页三类标签的样本口径：【实测】数字来自同一台 Windows 本机的单次进程累计，
+    换机器、换上游账户或改模型配置后应重跑 5.3 的命令取新数，不沿用本页数值作结论。</p>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">12 / 12</span></div>
+</section>
+<section class="page">
+  <div class="hdr"><span class="brand">智旅灵犀 ∙ 文旅全场景智能辅助系统</span><span class="topic">复现方式与下一步</span></div>
+  <h2>5.3 复现命令</h2>
+  <div class="panel dark tall">
+<span class="t"># 1) 起服务（监听 127.0.0.1:5050）</span><br>
+start.bat　　# 或 python server\run_server.py<br><br>
+<span class="t"># 2) 全量回归：36 个测试文件 / 1,716 项断言</span><br>
+python run_tests.py<br><br>
+<span class="t"># 3) 逐场景实测 token 与延迟（差值归场景）</span><br>
+python server\measure_llm_cost.py<br><br>
+<span class="t"># 4) 实时累计值（模型用量 / 缓存命中 / 生图复用率 / 答复质量）</span><br>
+curl http://127.0.0.1:5050/api/admin/ops　　或打开 /admin 面板<br><br>
+<span class="t"># 5) 未接线模块的离线运行记录（11 ok / 0 failed）</span><br>
+python server\agent_offline_demo.py
+  </div>
+  <h2>5.4 下一步：按「能否写成一条会失败的测试」排序</h2>
+  <p>待办不按想法大小排，按两条硬判准排：这条需求能否追到一个真实数据源，能否写成一条会失败的测试；两条缺一，就留在待办里而不是界面上。
+    排在前面的三项都来自本章列出的限制本身。<b>第一，把校验从规则升级成带上下文的判定</b>——
+    现在 <span class="mono">validation</span> 能证明的是「这句话有没有来源、有没有踩到已知违规表达」，不能证明「这句话是对的」，
+    这条改完才能把通过率当质量信号用。</p>
+  <p><b>第二，把大文件拆开</b>：<span class="mono">app.py</span> 与前端单页的拆分方案已定（按接口域切 blueprint、前端按视图分模块），
+    但它不新增能力，因此排在真实能力之后而不是之前。<b>第三，多人偏好平衡</b>：把当前靠提示词规则承接的部分，
+    改成有明确输入输出、可被测试覆盖的求解步骤。</p>
+  <h2>5.5 结语</h2>
+  <div class="panel warn" style="font-size:11pt;line-height:1.8">三件事都能被上面这些命令当场验证：<b>让一条行程真的能出发</b>——带的是实时核对过的价格与路线；
+    <b>让一张名片真的能带客</b>——产出物本身就是扫码入口；<b>让每一次模型调用算得清、查得到出处</b>——
+    token 来自真实响应，数据来自可核验接口，没做到的写在限制里而不是藏在形容词里。</div>
+  <div class="ftr"><span>智旅灵犀 ∙ v2.2.0</span><span class="pg">13 / 13</span></div>
+</section>
+
+<script>
+  // 页码在打印时按实际分页数填写，避免增删页面后页脚错位
+  (function () {
+    var pages = document.querySelectorAll('.page');
+    var total = pages.length;
+    pages.forEach(function (p, i) {
+      var el = p.querySelector('.ftr .pg');
+      if (el) el.textContent = (i + 1) + ' / ' + total;
+    });
+  })();
+</script>
+</body>
+</html>

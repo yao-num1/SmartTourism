@@ -1,0 +1,33 @@
+<view class="page home-page">
+  <view class="hero card">
+    <view class="hero-kicker">AI 文旅助手</view>
+    <view class="hero-title">智旅灵犀</view>
+    <view class="hero-desc">面向游客的目的地问答、智能行程规划、社区攻略与文旅热点推荐。</view>
+    <button class="primary-btn hero-btn" bindtap="goChat">开始咨询</button>
+  </view>
+
+  <view class="section-title">常用功能</view>
+  <view class="feature-grid">
+    <view class="feature card" bindtap="goChat">
+      <view class="feature-icon">问</view>
+      <view class="feature-title">AI 咨询</view>
+      <view class="muted">问景点、美食、交通和避坑建议。</view>
+    </view>
+    <view class="feature card" bindtap="goPlan">
+      <view class="feature-icon">行</view>
+      <view class="feature-title">行程规划</view>
+      <view class="muted">按城市、天数和偏好生成路线。</view>
+    </view>
+    <view class="feature card" bindtap="goCommunity">
+      <view class="feature-icon">游</view>
+      <view class="feature-title">社区攻略</view>
+      <view class="muted">浏览游记、攻略、点击排行和收藏排行。</view>
+    </view>
+  </view>
+
+  <view class="section-title">适合短视频挂载</view>
+  <view class="mount-card card">
+    <view class="mount-title">从视频种草到小程序转化</view>
+    <view class="muted">用户从抖音短视频进入后，可以直接查看目的地攻略、生成个性化路线，并收藏感兴趣的内容。</view>
+  </view>
+</view>

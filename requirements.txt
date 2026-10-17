@@ -1,0 +1,19 @@
+# SmartTourism v2.0 需求文件
+flask>=3.0
+flask-cors>=4.0
+requests>=2.28
+
+# 生产级 WSGI 服务器（run_server.py 优先使用；未安装则回退 Flask 内置服务器）
+waitress>=2.1
+
+# Gradio 前端
+gradio>=4.0
+
+# RAG 向量检索（可选，未安装则退化）
+chromadb>=0.5
+
+# 外部导入-网页解析（可选）
+beautifulsoup4>=4.12
+
+# 语音识别（本地离线，Web Speech 不可用时自动降级）
+faster-whisper>=1.0

@@ -1,0 +1,9 @@
+{
+  "amap_key": "在此填入高德 Web 服务 Key",
+  "amap_js_key": "在此填入高德 JS API Key",
+  "seniverse_public_key": "在此填入心知天气 Key（可选）",
+  "fliggy_app_key": "在此填入飞猪 App Key（可选）",
+  "fliggy_app_secret": "在此填入飞猪 App Secret（可选）",
+  "meituan_token": "在此填入美团 AI Hub Token（可选）",
+  "_comment": "复制本文件为 plugin_config.json 并填入真实 Key。plugin_config.json 为本地私有文件，不会提交。所有字段均可留空，系统会降级到本地知识库/兜底。"
+}

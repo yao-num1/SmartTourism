@@ -1,0 +1,62 @@
+<view class="page community-page">
+  <view class="hero card">
+    <view class="hero-title">社区攻略</view>
+    <view class="muted">沉淀用户游记、路线心得、文创打卡与平台热点，适合承接短视频流量。</view>
+  </view>
+
+  <view class="section-title">发布心得</view>
+  <view class="compose card">
+    <input class="input" value="{{draftTitle}}" placeholder="标题，例如：西湖夜游怎么拍最出片" bindinput="onTitleInput" />
+    <input class="input" value="{{draftTag}}" placeholder="标签，例如：拍照、夜游" bindinput="onTagInput" />
+    <textarea class="textarea" value="{{draftContent}}" placeholder="写下路线、避坑经验、餐食或文创推荐..." bindinput="onContentInput" />
+    <button class="primary-btn" bindtap="publishPost">发布到社区</button>
+  </view>
+
+  <view class="section-title">攻略精选</view>
+  <view class="post card" tt:for="{{posts}}" tt:key="id">
+    <view class="post-head">
+      <view>
+        <view class="post-title">{{item.title}}</view>
+        <view class="post-author">by {{item.author}}</view>
+      </view>
+      <view class="tag">{{item.tag}}</view>
+    </view>
+    <view class="post-content">{{item.content}}</view>
+    <view class="post-actions">
+      <button class="ghost-btn action" data-id="{{item.id}}" bindtap="viewPost">浏览 {{item.views}}</button>
+      <button class="ghost-btn action" data-id="{{item.id}}" bindtap="favPost">收藏 {{item.favs}}</button>
+    </view>
+  </view>
+
+  <view class="section-title">点击排行</view>
+  <view class="rank card">
+    <view class="rank-row" tt:for="{{clickRank}}" tt:key="id">
+      <text class="rank-no">{{index + 1}}</text>
+      <text class="rank-title">{{item.title}}</text>
+      <text class="rank-num">{{item.views}} 次</text>
+    </view>
+  </view>
+
+  <view class="section-title">收藏排行</view>
+  <view class="rank card">
+    <view class="rank-row" tt:for="{{favRank}}" tt:key="id">
+      <text class="rank-no">{{index + 1}}</text>
+      <text class="rank-title">{{item.title}}</text>
+      <text class="rank-num">{{item.favs}} 次</text>
+    </view>
+  </view>
+
+  <view class="section-title">官方热点</view>
+  <view class="hot card">
+    <view tt:if="{{hotspots.length}}">
+      <view class="hot-item" tt:for="{{hotspots}}" tt:key="title">
+        <view class="hot-platform">{{item.platform}}</view>
+        <view class="hot-title">{{item.title}}</view>
+        <view class="muted">{{item.summary}}</view>
+      </view>
+    </view>
+    <view tt:else>
+      <view class="muted">{{hotspotStatus}}</view>
+    </view>
+  </view>
+</view>

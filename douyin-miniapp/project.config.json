@@ -1,0 +1,12 @@
+{
+  "appid": "ttb5fec3432b845b4d01",
+  "projectname": "SmartTourismDouyinMiniapp",
+  "miniprogramRoot": "./",
+  "compileType": "miniprogram",
+  "setting": {
+    "urlCheck": true,
+    "es6": true,
+    "postcss": true,
+    "minified": true
+  }
+}

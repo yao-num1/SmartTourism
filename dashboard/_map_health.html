@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><title>plan map diag</title>
+<style>html,body{margin:0;height:100%}#f{width:100%;height:100%;border:0}#out{position:fixed;right:0;top:0;z-index:99999;max-width:44%;background:#fff;color:#111;font:12px/1.5 monospace;white-space:pre-wrap;border-left:2px solid #333;padding:8px;max-height:100%;overflow:auto}</style>
+</head>
+<body>
+<iframe id="f" src="/"></iframe>
+<pre id="out">running...</pre>
+<script>
+var log = [];
+function p(s) { log.push(String(s)); document.getElementById('out').textContent = log.join('\n'); }
+if (/[?&]quiet=1/.test(location.search)) document.getElementById('out').style.display = 'none';
+window.onerror = function(m, s, l) { p('ONERROR: ' + m + ' @' + (s||'') + ':' + l); };
+
+var f = document.getElementById('f');
+f.onload = function() {
+  var w = f.contentWindow, d = f.contentDocument;
+  var _ce = w.console.error;
+  w.console.error = function() { p('IFRAME ERROR: ' + Array.prototype.slice.call(arguments).join(' ').slice(0, 260)); _ce.apply(w.console, arguments); };
+  var _cw = w.console.warn;
+  w.console.warn = function() { p('IFRAME WARN: ' + Array.prototype.slice.call(arguments).join(' ').slice(0, 260)); _cw.apply(w.console, arguments); };
+
+  function snap(tag) {
+    var el = d.getElementById('plan-map-notice');
+    p('[' + tag + '] amapLoadState=' + w.amapLoadState + '  AMap=' + (typeof w.AMap));
+    if (!el) { p('[' + tag + '] notice 元素不存在'); return; }
+    p('[' + tag + '] notice hidden=' + el.hidden + ' class=' + el.className);
+    var txt = (el.textContent || '').replace(/\s+/g, ' ').trim();
+    p('[' + tag + '] notice 文案: ' + txt.slice(0, 220));
+    var btns = el.querySelectorAll('.map-notice-btn');
+    var names = [];
+    for (var i = 0; i < btns.length; i++) names.push(btns[i].textContent.trim());
+    p('[' + tag + '] 按钮: ' + (names.join(' | ') || '(无)'));
+  }
+
+  setTimeout(function() {
+    p('== 首屏后 6s ==');
+    p('typeof AMap: ' + typeof w.AMap + '   (typeof w.retryAmap: ' + typeof w.retryAmap + ')');
+    try { w.switchPage('plan'); } catch (e) { p('switchPage 抛错: ' + e.message); }
+  }, 6000);
+
+  setTimeout(function() {
+    p('== 切到规划页后 ==');
+    var c = d.getElementById('plan-map-container');
+    if (c) p('容器 canvas=' + c.querySelectorAll('canvas').length + ' img=' + c.querySelectorAll('img').length + ' 子节点=' + c.children.length);
+    snap('场景A');
+    // 验证重试链路：点一次「重新加载地图」后状态是否重新走一遍
+    if (typeof w.retryAmap === 'function') {
+      p('== 调用 retryAmap() ==');
+      try { w.retryAmap(); p('retry 后 state=' + w.amapLoadState); } catch (e) { p('retryAmap 抛错: ' + e.message); }
+    }
+  }, 12000);
+
+  setTimeout(function() {
+    p('== 重试 8s 后 ==');
+    snap('场景B');
+    p('FINISH');
+  }, 21000);
+};
+</script>
+</body>
+</html>

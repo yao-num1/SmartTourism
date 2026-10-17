@@ -1,0 +1,128 @@
+.community-page {
+  background:
+    radial-gradient(circle at 12% 0%, rgba(211, 145, 61, 0.18), transparent 32%),
+    #f8f3e8;
+}
+
+.hero,
+.compose,
+.post,
+.rank,
+.hot {
+  padding: 28rpx;
+}
+
+.hero-title {
+  font-size: 40rpx;
+  font-weight: 900;
+  margin-bottom: 10rpx;
+}
+
+.compose .input,
+.compose .textarea {
+  margin-bottom: 18rpx;
+}
+
+.post {
+  margin-bottom: 18rpx;
+}
+
+.post-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18rpx;
+}
+
+.post-title {
+  font-size: 31rpx;
+  font-weight: 900;
+  line-height: 1.35;
+}
+
+.post-author {
+  margin-top: 8rpx;
+  color: #8a7a69;
+  font-size: 24rpx;
+}
+
+.post-content {
+  margin: 18rpx 0;
+  color: #4b4035;
+  font-size: 27rpx;
+  line-height: 1.7;
+}
+
+.post-actions {
+  display: flex;
+  gap: 16rpx;
+}
+
+.action {
+  flex: 1;
+  height: 70rpx;
+  line-height: 70rpx;
+  font-size: 24rpx;
+}
+
+.rank-row {
+  display: grid;
+  grid-template-columns: 48rpx 1fr 120rpx;
+  align-items: center;
+  gap: 12rpx;
+  padding: 16rpx 0;
+  border-bottom: 1rpx solid rgba(111, 83, 48, 0.12);
+}
+
+.rank-row:last-child {
+  border-bottom: 0;
+}
+
+.rank-no {
+  width: 40rpx;
+  height: 40rpx;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f5e7d1;
+  color: #965513;
+  font-size: 22rpx;
+  font-weight: 900;
+}
+
+.rank-title {
+  font-size: 26rpx;
+  color: #2b241b;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+.rank-num {
+  text-align: right;
+  color: #8a7a69;
+  font-size: 23rpx;
+}
+
+.hot-item {
+  padding: 18rpx 0;
+  border-bottom: 1rpx solid rgba(111, 83, 48, 0.12);
+}
+
+.hot-item:last-child {
+  border-bottom: 0;
+}
+
+.hot-platform {
+  color: #965513;
+  font-size: 23rpx;
+  font-weight: 900;
+}
+
+.hot-title {
+  margin: 8rpx 0;
+  color: #2b241b;
+  font-size: 29rpx;
+  font-weight: 900;
+}

@@ -1,0 +1,23 @@
+<view class="page plan-page">
+  <view class="form-card card">
+    <view class="form-title">生成你的专属路线</view>
+    <view class="muted">适合从短视频进入后的快速决策：填城市、天数和偏好即可生成。</view>
+
+    <input class="input" value="{{city}}" placeholder="目的地，例如：杭州" bindinput="onCityInput" />
+    <input class="input" value="{{days}}" type="number" placeholder="游玩天数，例如：2" bindinput="onDaysInput" />
+    <input class="input" value="{{budget}}" placeholder="预算，例如：人均 800 元" bindinput="onBudgetInput" />
+    <textarea class="textarea" value="{{preference}}" placeholder="偏好：亲子、拍照、美食、非遗、夜游..." bindinput="onPreferenceInput" />
+
+    <button class="primary-btn" loading="{{loading}}" bindtap="generatePlan">生成行程</button>
+  </view>
+
+  <view class="result card" tt:if="{{reply}}">
+    <view class="result-title">规划结果</view>
+    <text class="result-text">{{reply}}</text>
+  </view>
+
+  <view class="empty card" tt:else>
+    <view class="empty-title">建议首版审核场景</view>
+    <view class="muted">用户通过视频进入小程序后，可以立即生成目的地路线，提升“种草到行动”的转化效率。</view>
+  </view>
+</view>

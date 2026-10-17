@@ -1,0 +1,17 @@
+{
+  "pages": [
+    "pages/home/index",
+    "pages/chat/index",
+    "pages/plan/index",
+    "pages/community/index"
+  ],
+  "window": {
+    "navigationBarTitleText": "智旅灵犀",
+    "navigationBarBackgroundColor": "#ffffff",
+    "navigationBarTextStyle": "black",
+    "backgroundColor": "#f8f3e8"
+  },
+  "networkTimeout": {
+    "request": 30000
+  }
+}

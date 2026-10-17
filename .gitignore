@@ -1,0 +1,67 @@
+# 本地密钥与环境变量文件
+.env
+.env.*
+!.env.example
+deploy/set-social-hotspot-env.ps1
+
+# 本地私有密钥配置（真实 Key 只存本地，仓库仅保留 .example 模板）
+data/llm_config.json
+data/plugin_config.json
+data/ark_config.json
+!data/llm_config.example.json
+!data/plugin_config.example.json
+!data/ark_config.example.json
+
+# Python 缓存
+__pycache__/
+*.pyc
+
+# 本地数据库运行文件
+data/*.db
+data/*.db-wal
+data/*.db-shm
+data/cards.json
+data/inspire_pool.json
+data/inspire_cards_live.json
+
+# 运行日志与本地维护产物
+data/logs/
+*.log
+
+# 生成的海报/配图缓存（体积大，可重新生成）
+dashboard/poster/
+
+# 本地备份与临时测试脚本
+_backup_*/
+_*.py
+_*.js
+_*.txt
+.workbuddy/
+
+# 本地虚拟环境
+venv/
+.venv/
+
+# 大体积二进制产物与本地素材（不纳入版本库，可另行备份/重新生成）
+.dumate/
+*.pptx
+*效果预览.html
+vibe_images/
+参赛完善包/
+smarttourism-marketing-posters.design/
+
+# 浏览器自动化测试遗留的用户数据目录（体积大，纯本地临时产物）
+data/_edgeprof*/
+data/_*.png
+data/_*.json
+data/chroma_db/
+
+# 其它本地临时/诊断产物
+*.tmp
+.DS_Store
+Thumbs.db
+
+# 补充：工作目录与调试文件
+_deck/
+_doc_work/
+dashboard/_mapdiag.html

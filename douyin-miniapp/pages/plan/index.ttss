@@ -1,0 +1,45 @@
+.plan-page {
+  background:
+    radial-gradient(circle at 90% 4%, rgba(181, 101, 29, 0.16), transparent 36%),
+    #f8f3e8;
+}
+
+.form-card {
+  padding: 28rpx;
+}
+
+.form-title {
+  font-size: 36rpx;
+  font-weight: 900;
+  margin-bottom: 10rpx;
+}
+
+.input,
+.textarea {
+  margin-top: 20rpx;
+}
+
+.primary-btn {
+  margin-top: 24rpx;
+}
+
+.result,
+.empty {
+  padding: 30rpx;
+  margin-top: 24rpx;
+}
+
+.result-title,
+.empty-title {
+  font-size: 32rpx;
+  font-weight: 900;
+  margin-bottom: 14rpx;
+}
+
+.result-text {
+  display: block;
+  color: #3b3024;
+  font-size: 27rpx;
+  line-height: 1.75;
+  white-space: pre-wrap;
+}

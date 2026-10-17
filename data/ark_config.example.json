@@ -1,0 +1,10 @@
+{
+  "api_key": "在此填入火山方舟 ARK_API_KEY（用于文创海报/灵感配图，可选）",
+  "model": "doubao-seedream-4-5-251128",
+  "watermark": false,
+  "poster_size": "2K",
+  "image_size": "2K",
+  "blog_api_key": "可选：旅游博客配图专属 Key（用于主视觉海报/场景图/美食图）。留空则回落到上面的 api_key",
+  "blog_size": "2K",
+  "_comment": "复制本文件为 ark_config.json 并填入真实 Key。ark_config.json 为本地私有文件，不会提交。留空则海报/配图功能降级。接口为火山方舟 POST /api/v3/images/generations（Seedream 文生图）。blog_api_key 只服务旅游博客配图，其他生图场景仍用 api_key。"
+}

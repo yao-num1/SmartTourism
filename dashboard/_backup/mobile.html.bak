@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#2d5a27">
+<title>智旅灵犀</title>
+<link rel="stylesheet" href="/static/mobile.css">
+</head>
+<body>
+<div class="page" id="chatPage">
+  <div class="navbar"><h1>🏞️ 智旅灵犀</h1><button class="nav-btn" onclick="clearChatM()">🗑️</button></div>
+  <div class="chat-body" id="chatBody">
+    <div class="welcome" id="welcomeM"><div class="welcome-logo">🏞️</div><h2>智旅灵犀</h2><p>文旅智能助手 · 随身导游</p>
+      <div class="quick-chips">
+        <span class="chip" onclick="quickAsk('帮我规划一个3天2夜的旅行')">📅 行程规划</span>
+        <span class="chip" onclick="quickAsk('附近有什么好玩的')">🗺️ 附近景点</span>
+        <span class="chip" onclick="quickAsk('现在天气怎么样')">🌤️ 天气</span>
+        <span class="chip" onclick="quickAsk('推荐几家酒店')">🏨 酒店</span>
+      </div>
+    </div>
+  </div>
+  <div class="input-bar">
+    <button class="loc-btn" onclick="gpsLocateM()">📍</button>
+    <textarea id="inputM" rows="1" placeholder="输入问题..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendMsg()}"></textarea>
+    <button class="send-btn" onclick="sendMsg()">➤</button>
+  </div>
+</div>
+
+<div class="page hidden" id="mapPage">
+  <div class="navbar"><button class="nav-btn" onclick="switchTab('chat')">◀</button><h1>🗺️ 地图</h1></div>
+  <div class="map-page">
+    <div id="mapContainer2"></div>
+    <div class="map-search">
+      <select id="mapSearchType"><option>景点</option><option>酒店</option><option>餐饮</option></select>
+      <input id="mapSearchInput" placeholder="搜索周边..." onkeydown="if(event.key==='Enter')searchMap()">
+      <button onclick="searchMap()">🔍</button>
+    </div>
+    <div class="map-addr" id="mapAddrBar">
+      <span class="addr-text" id="mapAddrText">定位中...</span>
+      <button onclick="relocateMap()">重新定位</button>
+    </div>
+    <div class="map-fab"><button class="fab-locate" onclick="relocateMap()">📍</button></div>
+    <div class="map-panel" id="mapPanel">
+      <div class="pan-title"><span id="mapPanelTitle">搜索结果</span><button class="close-btn" onclick="closeMapPanel()">x</button></div>
+      <div id="mapPanelList"></div>
+    </div>
+  </div>
+</div>
+
+<div class="page hidden" id="settingsPage">
+  <div class="navbar"><button class="nav-btn" onclick="switchTab('chat')">◀</button><h1>⚙️ 设置</h1></div>
+  <div class="settings-body">
+    <div class="setting-group"><h3>AI 模型</h3>
+      <div class="setting-card">
+        <label>供应商</label><select id="sProvider" onchange="onProviderChangeM()"><option value="deepseek">DeepSeek</option><option value="zhipu">智谱</option><option value="qwen">通义千问</option><option value="moonshot">Kimi</option></select>
+        <label>模型</label><select id="sModel"></select>
+        <label>API Key</label><input type="password" id="sApiKey" placeholder="输入 API Key...">
+        <button class="btn btn-primary" onclick="saveSettings()">保存配置</button>
+      </div>
+    </div>
+    <div class="setting-group"><h3>连接信息</h3>
+      <div class="setting-card" id="connInfo">加载中...</div>
+    </div>
+  </div>
+</div>
+
+<div class="tabbar">
+  <div class="tab active" id="tabChat" onclick="switchTab('chat')"><span class="tab-icon">💬</span>对话</div>
+  <div class="tab" id="tabMap" onclick="switchTab('map')"><span class="tab-icon">🗺️</span>地图</div>
+  <div class="tab" id="tabSettings" onclick="switchTab('settings')"><span class="tab-icon">⚙️</span>设置</div>
+</div>
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div></div>
+<script src="/static/mobile.js"></script>
+</body>
+</html>

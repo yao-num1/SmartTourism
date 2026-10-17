@@ -1,0 +1,413 @@
+{
+ "city": "洛阳",
+ "base_cards": [
+  {
+   "id": "B017B0OWGA",
+   "name": "隋唐洛阳城国家遗址公园",
+   "category": "景点",
+   "type": "风景名胜;公园广场;公园",
+   "address": "定鼎路与中州路交汇处(应天门地铁站C2口步行220米)",
+   "rating": "4.7",
+   "photo": "http://store.is.autonavi.com/showpic/8544705d1d7005f961ae71d29d701cbf",
+   "tel": "0379-60658081;0379-61109905;0379-65063201",
+   "business_area": "老城",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "西工区",
+   "location": {
+    "lng": 112.460318,
+    "lat": 34.679369
+   },
+   "reason": "来自行程路线",
+   "_src": "poi",
+   "priority": 3
+  },
+  {
+   "id": "B0FFIZLZ9D",
+   "name": "鱼乐园水族馆(涧河大道店)",
+   "category": "景点",
+   "type": "风景名胜;公园广场;水族馆",
+   "address": "涧河大道912号",
+   "rating": "3.7",
+   "photo": "https://store.is.autonavi.com/showpic/6cea7675bd639fc10000003295684787",
+   "tel": "18336794840",
+   "business_area": "",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "新安县",
+   "location": {
+    "lng": 112.131692,
+    "lat": 34.731889
+   },
+   "reason": "来自行程路线",
+   "_src": "poi",
+   "priority": 3
+  },
+  {
+   "id": "B017B01GCT",
+   "name": "基督教堂",
+   "category": "景点",
+   "type": "风景名胜;风景名胜;教堂",
+   "address": "城关镇310国道",
+   "rating": "4.0",
+   "photo": "http://store.is.autonavi.com/showpic/82d095b36285bdf73d23a4fad5c5d15f",
+   "tel": "",
+   "business_area": "",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "新安县",
+   "location": {
+    "lng": 112.152309,
+    "lat": 34.723257
+   },
+   "reason": "来自行程路线",
+   "_src": "poi",
+   "priority": 3
+  },
+  {
+   "id": "B017B01VLZ",
+   "name": "春天快捷酒店(金城路)",
+   "category": "酒店",
+   "type": "住宿服务;宾馆酒店;宾馆酒店",
+   "address": "金城路东段大加油站东50米",
+   "rating": "4.8",
+   "photo": "https://store.is.autonavi.com/showpic/216a42f98c621e3c415f309304ff90fa",
+   "tel": "0379-66316631",
+   "business_area": "嵩县百货楼",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "嵩县",
+   "location": {
+    "lng": 112.092757,
+    "lat": 34.135474
+   },
+   "reason": "住宿备选",
+   "_src": "poi",
+   "priority": 1
+  },
+  {
+   "id": "B0FFIBM2H6",
+   "name": "洛阳麒御酒店",
+   "category": "酒店",
+   "type": "住宿服务;宾馆酒店;宾馆酒店",
+   "address": "解放路19号(纱厂路地铁站E口步行170米)",
+   "rating": "4.8",
+   "photo": "http://store.is.autonavi.com/showpic/F2898FB46AF247C089FEF529CB094367",
+   "tel": "0379-63566888;0379-65290888;17657573618",
+   "business_area": "新都汇",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "西工区",
+   "location": {
+    "lng": 112.43451,
+    "lat": 34.679193
+   },
+   "reason": "住宿备选",
+   "_src": "poi",
+   "priority": 1
+  },
+  {
+   "id": "B017B0OYWZ",
+   "name": "洛阳华苑旅社",
+   "category": "酒店",
+   "type": "住宿服务;旅馆招待所;旅馆招待所",
+   "address": "西苑路东80米唐村32号",
+   "rating": "3.7",
+   "photo": "http://store.is.autonavi.com/showpic/af9a63c12b36fb9d623e8d38973beb5a",
+   "tel": "0379-64232300;+861056320612,46112185",
+   "business_area": "上海市场",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "涧西区",
+   "location": {
+    "lng": 112.378821,
+    "lat": 34.662439
+   },
+   "reason": "住宿备选",
+   "_src": "poi",
+   "priority": 1
+  },
+  {
+   "id": "B017B0P5Q2",
+   "name": "小街天府",
+   "category": "餐饮",
+   "type": "餐饮服务;中餐厅;特色/地方风味餐厅",
+   "address": "西工小街与人民东路交叉口向东80米",
+   "rating": "4.8",
+   "photo": "http://store.is.autonavi.com/showpic/25450830364ed18fb9b699bec6681b92",
+   "tel": "16668000272",
+   "business_area": "中州万达",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "西工区",
+   "location": {
+    "lng": 112.446348,
+    "lat": 34.672064
+   },
+   "reason": "用餐灵感",
+   "_src": "poi",
+   "priority": 1
+  },
+  {
+   "id": "B017B024FD",
+   "name": "清真马杰山牛肉汤馆",
+   "category": "餐饮",
+   "type": "餐饮服务;中餐厅;清真菜馆",
+   "address": "启明东路245号",
+   "rating": "4.8",
+   "photo": "http://store.is.autonavi.com/showpic/4bec655010b3b7d4af2757e3d5f5b5ea",
+   "tel": "18338896703;18537993337",
+   "business_area": "东花坛",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "瀍河回族区",
+   "location": {
+    "lng": 112.506856,
+    "lat": 34.695704
+   },
+   "reason": "用餐灵感",
+   "_src": "poi",
+   "priority": 1
+  },
+  {
+   "id": "B0FFFCLUHW",
+   "name": "铁谢李松祖传羊肉汤(全国总店)",
+   "category": "餐饮",
+   "type": "餐饮服务;中餐厅;中餐厅",
+   "address": "白鹤镇铁谢村汉光武帝陵斜对面",
+   "rating": "4.8",
+   "photo": "https://aos-comment.amap.com/B0FFFCLUHW/comment/content_media_external_file_100006525_1759724240579_41410501.jpg",
+   "tel": "15036787257",
+   "business_area": "",
+   "pname": "河南省",
+   "cityname": "洛阳市",
+   "adname": "孟津区",
+   "location": {
+    "lng": 112.595203,
+    "lat": 34.836012
+   },
+   "reason": "用餐灵感",
+   "_src": "poi",
+   "priority": 1
+  }
+ ],
+ "reco": {
+  "city": "洛阳",
+  "disclaimer": "价格与库存来自美团实时查询，以下单页面为准；地址/电话/图片部分由高德地图补齐。",
+  "generated_at": "2026-09-21T21:08:40",
+  "groups": [
+   {
+    "items": [
+     {
+      "address": "定鼎路与中州路交汇处(应天门地铁站C2口步行220米)",
+      "booking_kind": "search",
+      "booking_url": "https://i.meituan.com/search/?w=%E6%B4%9B%E9%98%B3%20%E9%9A%8B%E5%94%90%E6%B4%9B%E9%98%B3%E5%9F%8E%E5%9B%BD%E5%AE%B6%E9%81%97%E5%9D%80%E5%85%AC%E5%9B%AD",
+      "desc": "位于西工区老城的公园",
+      "group": "scenic",
+      "image": "http://store.is.autonavi.com/showpic/8544705d1d7005f961ae71d29d701cbf",
+      "image_from": "高德",
+      "image_missing": false,
+      "name": "隋唐洛阳城国家遗址公园",
+      "nav_url": "https://uri.amap.com/marker?position=112.460318,34.679369&name=%E9%9A%8B%E5%94%90%E6%B4%9B%E9%98%B3%E5%9F%8E%E5%9B%BD%E5%AE%B6%E9%81%97%E5%9D%80%E5%85%AC%E5%9B%AD&src=smarttourism",
+      "phone": "0379-60658081;0379-61109905;0379-65063201",
+      "price": "",
+      "price_label": "",
+      "rating": "4.7",
+      "reviews": [],
+      "source": "高德",
+      "source_detail": "高德",
+      "type": "景点"
+     },
+     {
+      "address": "涧河大道912号",
+      "booking_kind": "search",
+      "booking_url": "https://i.meituan.com/search/?w=%E6%B4%9B%E9%98%B3%20%E9%B1%BC%E4%B9%90%E5%9B%AD%E6%B0%B4%E6%97%8F%E9%A6%86%28%E6%B6%A7%E6%B2%B3%E5%A4%A7%E9%81%93%E5%BA%97%29",
+      "desc": "位于新安县的水族馆",
+      "group": "scenic",
+      "image": "https://store.is.autonavi.com/showpic/6cea7675bd639fc10000003295684787",
+      "image_from": "高德",
+      "image_missing": false,
+      "name": "鱼乐园水族馆(涧河大道店)",
+      "nav_url": "https://uri.amap.com/marker?position=112.131692,34.731889&name=%E9%B1%BC%E4%B9%90%E5%9B%AD%E6%B0%B4%E6%97%8F%E9%A6%86%28%E6%B6%A7%E6%B2%B3%E5%A4%A7%E9%81%93%E5%BA%97%29&src=smarttourism",
+      "phone": "18336794840",
+      "price": "",
+      "price_label": "",
+      "rating": "3.7",
+      "reviews": [],
+      "source": "高德",
+      "source_detail": "高德",
+      "type": "景点"
+     },
+     {
+      "address": "城关镇310国道",
+      "booking_kind": "search",
+      "booking_url": "https://i.meituan.com/search/?w=%E6%B4%9B%E9%98%B3%20%E5%9F%BA%E7%9D%A3%E6%95%99%E5%A0%82",
+      "desc": "位于新安县的教堂",
+      "group": "scenic",
+      "image": "http://store.is.autonavi.com/showpic/82d095b36285bdf73d23a4fad5c5d15f",
+      "image_from": "高德",
+      "image_missing": false,
+      "name": "基督教堂",
+      "nav_url": "https://uri.amap.com/marker?position=112.152309,34.723257&name=%E5%9F%BA%E7%9D%A3%E6%95%99%E5%A0%82&src=smarttourism",
+      "phone": "",
+      "price": "",
+      "price_label": "",
+      "rating": "4.0",
+      "reviews": [],
+      "source": "高德",
+      "source_detail": "高德",
+      "type": "景点"
+     }
+    ],
+    "key": "scenic",
+    "label": "景点",
+    "source_note": "高德地图商户数据（价格/评分来自高德，购票跳转美团）"
+   },
+   {
+    "items": [
+     {
+      "address": "长安路11号",
+      "booking_kind": "search",
+      "booking_url": "https://i.meituan.com/search/?w=%E6%B4%9B%E9%98%B3%20%E5%9B%9B%E5%B7%9D%E4%BB%A3%E8%AE%B0%E7%86%9F%E9%A3%9F%28%E9%95%BF%E5%AE%89%E8%B7%AF%E5%BA%97%29",
+      "desc": "位于涧西区上海市场的餐饮相关",
+      "group": "food",
+      "image": "https://store.is.autonavi.com/showpic/c5ad609cd8d0044ad23154caab5d0703",
+      "image_from": "高德",
+      "image_missing": false,
+      "name": "四川代记熟食(长安路店)",
+      "nav_url": "https://uri.amap.com/marker?position=112.378475,34.667154&name=%E5%9B%9B%E5%B7%9D%E4%BB%A3%E8%AE%B0%E7%86%9F%E9%A3%9F%28%E9%95%BF%E5%AE%89%E8%B7%AF%E5%BA%97%29&src=smarttourism",
+      "phone": "15038532439",
+      "price": "29",
+      "price_label": "人均 ¥29",
+      "rating": "4.5",
+      "reviews": [],
+      "source": "高德",
+      "source_detail": "高德",
+      "type": "美食"
+     },
+     {
+      "address": "瀍河回族乡小李村睦邻大道",
+      "booking_kind": "search",
+      "booking_url": "https://i.meituan.com/search/?w=%E6%B4%9B%E9%98%B3%20%E5%9B%9E%E6%B4%9B%E4%BB%93%E9%AB%98%E8%80%81%E5%9B%9B%E7%BE%8A%E9%AA%A8%E5%A4%B4%28%E9%A9%AC%E5%9D%A1%E9%AB%98%E8%80%81%E5%9B%9B%E7%BE%8A%E9%AA%A8%E5%A4%B4%E5%BA%97%29",
+      "desc": "位于瀍河回族区的清真菜馆",
+      "group": "food",
+      "image": "https://aos-comment.amap.com/B017B0PNFF/comment/20260322-490140dcb94f9fee38099b3b-AMjo7Zen8RUAAkwQck80x8.jpg",
+      "image_from": "高德",
+      "image_missing": false,
+      "name": "回洛仓高老四羊骨头(马坡高老四羊骨头店)",
+      "nav_url": "https://uri.amap.com/marker?position=112.500219,34.711473&name=%E5%9B%9E%E6%B4%9B%E4%BB%93%E9%AB%98%E8%80%81%E5%9B%9B%E7%BE%8A%E9%AA%A8%E5%A4%B4%28%E9%A9%AC%E5%9D%A1%E9%AB%98%E8%80%81%E5%9B%9B%E7%BE%8A%E9%AA%A8%E5%A4%B4%E5%BA%97%29&src=smarttourism",
+      "phone": "13938806469",
+      "price": "60",
+      "price_label": "人均 ¥60",
+      "rating": "4.5",
+      "reviews": [],
+      "source": "高德",
+      "source_detail": "高德",
+      "type": "美食"
+     },
+     {
+      "address": "华阳广场国际大饭店1层",
+      "booking_kind": "search",
+      "booking_url": "https://i.meituan.com/search/?w=%E6%B4%9B%E9%98%B3%20%E5%8D%8E%E9%98%B3%E6%97%B6%E5%85%89%E5%90%A7%E9%A4%90%E5%8E%85",
+      "desc": "位于涧西区的餐饮相关",
+      "group": "food",
+      "image": "https://aos-comment.amap.com/B0FFHZGZQO/comment/177020760648_1770207616893_65784342.jpg",
+      "image_from": "高德",
+      "image_missing": false,
+      "name": "华阳时光吧餐厅",
+      "nav_url": "https://uri.amap.com/marker?position=112.407102,34.652629&name=%E5%8D%8E%E9%98%B3%E6%97%B6%E5%85%89%E5%90%A7%E9%A4%90%E5%8E%85&src=smarttourism",
+      "phone": "0379-65588123;0379-65588388",
+      "price": "115",
+      "price_label": "人均 ¥115",
+      "rating": "4.5",
+      "reviews": [],
+      "source": "高德",
+      "source_detail": "高德",
+      "type": "美食"
+     }
+    ],
+    "key": "food",
+    "label": "美食",
+    "source_note": "高德地图商户数据（价格/评分来自高德，购票跳转美团）"
+   },
+   {
+    "items": [
+     {
+      "address": "聂潘路1-1号",
+      "booking_kind": "deeplink",
+      "booking_url": "http://dpurl.cn/wYv0IS8z",
+      "desc": "这家酒店评分高达4.9分，距离应天门很近，还提供全屋智能和汉服体验",
+      "group": "hotel",
+      "image": "http://p0.meituan.net/400.0/tdchoteldark/ddf67885098f3291b464b4b148f4c3fb3185139.jpg",
+      "image_from": "美团",
+      "image_missing": false,
+      "name": "四叶桐城市酒店(洛阳应天门天街店)",
+      "nav_url": "https://uri.amap.com/marker?position=112.475073,34.648508&name=%E5%9B%9B%E5%8F%B6%E6%A1%90%E5%9F%8E%E5%B8%82%E9%85%92%E5%BA%97%28%E6%B4%9B%E9%98%B3%E5%BA%94%E5%A4%A9%E9%97%A8%E5%A4%A9%E8%A1%97%E5%BA%97%29&src=smarttourism",
+      "phone": "0379-68777117;15603798945",
+      "price": "28",
+      "price_label": "¥28 起/晚",
+      "rating": "4.9",
+      "reviews": [
+       "价格非常实惠，花少钱就能享受高品质的住宿体验，性价比极高，完美满足你对高性价比和高评分的需求"
+      ],
+      "source": "美团",
+      "source_detail": "美团",
+      "type": "酒店"
+     },
+     {
+      "address": "滨河南路26号拾忆酒店",
+      "booking_kind": "deeplink",
+      "booking_url": "http://dpurl.cn/fkoEwcXz",
+      "desc": "",
+      "group": "hotel",
+      "image": "http://p0.meituan.net/400.0/tdchoteldark/f126a4ecc6778299ee32077a61ad054d11397014.jpg",
+      "image_from": "美团",
+      "image_missing": false,
+      "name": "拾忆酒店(洛阳博物馆店)",
+      "nav_url": "https://uri.amap.com/marker?position=112.461933,34.654752&name=%E6%8B%BE%E5%BF%86%E9%85%92%E5%BA%97%28%E6%B4%9B%E9%98%B3%E5%8D%9A%E7%89%A9%E9%A6%86%E5%BA%97%29&src=smarttourism",
+      "phone": "13015587309",
+      "price": "78",
+      "price_label": "¥78 起/晚",
+      "rating": "4.8",
+      "reviews": [],
+      "source": "美团",
+      "source_detail": "美团",
+      "type": "酒店"
+     },
+     {
+      "address": "中州中路239号九多肉多向南50米",
+      "booking_kind": "deeplink",
+      "booking_url": "http://dpurl.cn/rbq4PGtz",
+      "desc": "这家酒店评分4.7分，靠近地铁站和万达广场，出行和购物都非常方便",
+      "group": "hotel",
+      "image": "http://p0.meituan.net/400.0/tdchoteldark/9155daa3e13d46d4fea97d2c577f0fdd3949710.jpg",
+      "image_from": "美团",
+      "image_missing": false,
+      "name": "橙果酒店(应天门店)",
+      "nav_url": "https://uri.amap.com/marker?position=112.451081,34.674412&name=%E6%A9%99%E6%9E%9C%E9%85%92%E5%BA%97%28%E5%BA%94%E5%A4%A9%E9%97%A8%E5%BA%97%29&src=smarttourism",
+      "phone": "0379-60692690;0379-68602888",
+      "price": "94",
+      "price_label": "¥94 起/晚",
+      "rating": "4.7",
+      "reviews": [
+       "价格实惠，前台服务态度也很好，性价比不错，能很好地满足你的住宿需求"
+      ],
+      "source": "美团",
+      "source_detail": "美团",
+      "type": "酒店"
+     }
+    ],
+    "key": "hotel",
+    "label": "酒店",
+    "source_note": "美团实时数据"
+   }
+  ],
+  "notices": [],
+  "source_summary": {
+   "本地知识库": 0,
+   "美团": 3,
+   "高德": 6
+  },
+  "success": true
+ }
+}

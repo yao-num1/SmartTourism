@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="format-detection" content="telephone=no">
+<title>文创数字名片 · 智旅灵犀</title>
+<meta name="description" content="一物一码，文创自己会说话">
+<script src="lib/qrcode.min.js"></script>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  :root {
+    --paper: oklch(98% 0.018 88);
+    --paper-2: oklch(95% 0.022 88);
+    --paper-3: #fffdf8;
+    --ink: oklch(20% 0.030 80);
+    --ink-2: oklch(40% 0.030 80);
+    --ink-subtle: oklch(52% 0.025 80);
+    --rule: oklch(84% 0.028 88);
+    --accent: oklch(56% 0.18 38);
+    --accent-2: oklch(64% 0.16 52);
+    --accent-dim: oklch(93% 0.045 58);
+    --radius: 14px;
+  }
+  html, body { background: var(--paper); color: var(--ink); font-family: "PingFang SC", "Microsoft YaHei", -apple-system, sans-serif; }
+  body { max-width: 480px; margin: 0 auto; min-height: 100vh; }
+
+  .state { display: none; padding: 80px 24px; text-align: center; color: var(--ink-subtle); font-size: 14px; line-height: 2; }
+  .state.on { display: block; }
+
+  .hero { position: relative; background: var(--paper-2); }
+  .hero-img { width: 100%; height: 300px; object-fit: cover; display: block; background: var(--paper-2); }
+  .hero-img.ph { object-fit: contain; padding: 24px; }
+  /* AI 概念图生成中：流光占位，避免扫码后看到破图/空白 */
+  .hero-img.loading { object-fit: cover; padding: 0; background: linear-gradient(100deg, var(--paper-2) 18%, var(--paper-3) 40%, var(--paper-2) 62%); background-size: 220% 100%; animation: aiShimmer 1.6s linear infinite; }
+  @keyframes aiShimmer { 0% { background-position: 120% 0; } 100% { background-position: -20% 0; } }
+  .hero-cat { position: absolute; top: 14px; left: 14px; padding: 4px 12px; border-radius: 999px; background: rgba(20, 14, 8, .55); color: #fff; font-size: 12px; letter-spacing: .06em; }
+  .hero-imgnote { position: absolute; right: 14px; bottom: 14px; padding: 3px 10px; border-radius: 999px; background: rgba(20, 14, 8, .55); color: #fff; font-size: 11px; letter-spacing: .04em; }
+  .hero-body { padding: 18px 20px 20px; }
+  .hero-brand { font-size: 12px; color: var(--accent); font-weight: 600; letter-spacing: .08em; }
+  .hero-name { font-size: 24px; font-weight: 800; line-height: 1.3; margin-top: 6px; }
+  .hero-desc { margin-top: 10px; font-size: 14px; line-height: 1.9; color: var(--ink-2); }
+
+  .buybar { position: sticky; top: 0; z-index: 10; display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: rgba(255, 253, 248, .94); backdrop-filter: blur(8px); border-bottom: 1px solid var(--rule); }
+  .buybar-price { font-size: 20px; font-weight: 800; color: var(--accent); }
+  .buybar-price small { font-size: 12px; font-weight: 400; color: var(--ink-subtle); margin-left: 6px; }
+  .buybar-sales { font-size: 12px; color: var(--ink-subtle); }
+  .buybar-btn { margin-left: auto; padding: 10px 22px; border-radius: 999px; background: var(--accent); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; border: none; cursor: pointer; }
+  .buybar-btn:active { background: var(--accent-2); }
+
+  .sec { margin: 14px 14px 0; background: var(--paper-3); border: 1px solid var(--rule); border-radius: var(--radius); padding: 18px; }
+  .sec-title { display: flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; margin-bottom: 12px; }
+  .sec-title .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--accent); }
+  .sec p { font-size: 14px; line-height: 2; color: var(--ink-2); white-space: pre-wrap; word-break: break-word; }
+
+  .tags { display: flex; flex-wrap: wrap; gap: 8px; }
+  .tag { padding: 5px 13px; border-radius: 999px; background: var(--accent-dim); color: var(--accent); font-size: 12px; font-weight: 600; }
+
+  /* 核心亮点 */
+  .hl-list { display: flex; flex-direction: column; gap: 10px; }
+  .hl-item { display: flex; gap: 9px; font-size: 13.5px; line-height: 1.85; color: var(--ink-2); }
+  .hl-item .k { flex-shrink: 0; color: var(--accent); font-weight: 800; }
+
+  /* 深入了解（核心内容分段） */
+  .deep-block { padding: 0 0 14px; margin-bottom: 14px; border-bottom: 1px dashed var(--rule); }
+  .deep-block:last-child { padding-bottom: 0; margin-bottom: 0; border-bottom: none; }
+  .deep-h { display: flex; align-items: center; gap: 7px; font-size: 13.5px; font-weight: 700; color: var(--ink); margin-bottom: 6px; }
+  .deep-h::before { content: ''; width: 4px; height: 13px; border-radius: 2px; background: var(--accent-2); }
+  .deep-p { font-size: 13.5px; line-height: 1.95; color: var(--ink-2); white-space: pre-wrap; word-break: break-word; }
+
+  /* 灵感来源 */
+  .src-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+  .src-chip { padding: 4px 11px; border-radius: 999px; background: var(--paper-2); border: 1px solid var(--rule); color: var(--ink-2); font-size: 12px; }
+  .src-link { padding: 4px 11px; border-radius: 999px; background: #fff; border: 1px solid var(--accent); color: var(--accent); font-size: 12px; text-decoration: none; font-weight: 600; }
+
+  .qrcode-wrap { display: flex; gap: 16px; align-items: center; }
+  .qrcode-box { width: 128px; height: 128px; flex-shrink: 0; padding: 8px; background: #fff; border: 1px solid var(--rule); border-radius: 10px; }
+  .qrcode-box img, .qrcode-box canvas { width: 112px !important; height: 112px !important; display: block; }
+  .qrcode-tip { font-size: 13px; color: var(--ink-2); line-height: 1.9; }
+  .qrcode-actions { display: flex; gap: 8px; margin-top: 12px; }
+  .mini-btn { padding: 8px 16px; border-radius: 999px; border: 1px solid var(--rule); background: #fff; color: var(--ink-2); font-size: 13px; cursor: pointer; }
+  .mini-btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .mini-btn:active { opacity: .8; }
+
+  .footer { margin: 22px 14px 30px; padding: 20px 18px; border-radius: var(--radius); background: linear-gradient(150deg, var(--accent-dim), #fff8ec); border: 1px solid var(--rule); text-align: center; }
+  .footer-logo { font-size: 17px; font-weight: 800; color: var(--accent); }
+  .footer-sub { margin-top: 6px; font-size: 12.5px; color: var(--ink-2); line-height: 1.8; }
+  .footer-btn { display: inline-block; margin-top: 14px; padding: 11px 30px; border-radius: 999px; background: var(--ink); color: #fff; text-decoration: none; font-size: 14px; font-weight: 600; }
+
+  .toast { position: fixed; left: 50%; bottom: 40px; transform: translateX(-50%) translateY(20px); padding: 10px 22px; border-radius: 999px; background: rgba(20, 16, 10, .88); color: #fff; font-size: 13px; opacity: 0; transition: all .25s ease; pointer-events: none; z-index: 99; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  .wechat-tip { display: none; margin: 0 14px 14px; padding: 12px 16px; border-radius: 12px; background: #fff7e0; border: 1px solid #ecd9a0; color: #7a5b12; font-size: 13px; line-height: 1.8; }
+</style>
+</head>
+<body>
+
+<div class="state" id="state-error">名片不存在或已过期<br>请从智旅灵犀重新生成</div>
+
+<div id="card-root" style="display:none">
+  <div class="hero">
+    <img class="hero-img" id="c-img" alt="">
+    <div class="hero-cat" id="c-cat"></div>
+    <div class="hero-imgnote" id="c-imgnote" style="display:none"></div>
+    <div class="hero-body">
+      <div class="hero-brand" id="c-brand"></div>
+      <div class="hero-name" id="c-name"></div>
+      <div class="hero-desc" id="c-desc"></div>
+    </div>
+  </div>
+
+  <div class="buybar" id="c-buybar" style="display:none">
+    <div>
+      <div class="buybar-price" id="c-price"></div>
+      <div class="buybar-sales" id="c-sales"></div>
+    </div>
+    <a class="buybar-btn" id="c-buy" target="_blank" rel="noopener">去看看</a>
+  </div>
+
+  <div class="sec" id="sec-highlights" style="display:none">
+    <div class="sec-title"><span class="dot"></span>为什么值得拥有</div>
+    <div class="hl-list" id="c-highlights"></div>
+  </div>
+
+  <div class="sec" id="sec-deep" style="display:none">
+    <div class="sec-title"><span class="dot"></span>深入了解这件文创</div>
+    <div id="c-deep"></div>
+  </div>
+
+  <div class="sec" id="sec-culture" style="display:none">
+    <div class="sec-title"><span class="dot"></span>背后的文化故事</div>
+    <p id="c-culture"></p>
+  </div>
+
+  <div class="sec" id="sec-design" style="display:none">
+    <div class="sec-title"><span class="dot"></span>设计与工艺</div>
+    <p id="c-design"></p>
+  </div>
+
+  <div class="sec" id="sec-audience" style="display:none">
+    <div class="sec-title"><span class="dot"></span>适合谁</div>
+    <p id="c-audience"></p>
+    <div class="tags" id="c-tags" style="margin-top:12px"></div>
+  </div>
+
+  <div class="sec" id="sec-source" style="display:none">
+    <div class="sec-title"><span class="dot"></span>灵感来源</div>
+    <div class="src-row" id="c-source"></div>
+  </div>
+
+  <div class="sec">
+    <div class="sec-title"><span class="dot"></span>把这个名片印到包装上</div>
+    <div class="qrcode-wrap">
+      <div class="qrcode-box" id="qrcode"></div>
+      <div class="qrcode-tip">每一件文创都藏着一段故事：扫码 3 秒，看它的文化来历、设计巧思与同款好物<br>这张二维码属于这件文创，长期有效</div>
+    </div>
+    <div class="qrcode-actions">
+      <button class="mini-btn primary" onclick="copyLink()">复制名片链接</button>
+      <button class="mini-btn" onclick="shareCard()">分享</button>
+      <a class="mini-btn" id="qr-download" download="文创名片二维码.png">下载二维码</a>
+    </div>
+    <div id="qr-lan-tip" style="display:none;margin-top:12px;padding:10px 12px;border-radius:8px;background:#fff8ec;border:1px solid #f0dfb8;font-size:12px;line-height:1.8;color:#8a6d1d"></div>
+  </div>
+
+  <div class="wechat-tip" id="wechat-tip">当前在微信内打开：点右上角「···」可转发给朋友或朋友圈；如要扫码测试，请先在浏览器中打开本页。</div>
+
+  <div class="footer">
+    <div class="footer-logo">智旅灵犀 · 文创数字名片</div>
+    <div class="footer-sub">一物一码，让每件文创自己讲故事、自己带货<br>免费为你的文创生成同款名片</div>
+    <a class="footer-btn" id="back-home" href="/">我也要生成</a>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// 本机地址（127.0.0.1 / localhost）无法被手机扫码访问，需替换为局域网 IP
+var shareUrl = location.href;
+(function () {
+  var API = location.origin;
+  var params = new URLSearchParams(location.search);
+  var cid = (params.get('id') || '').trim();
+
+  function toast(msg) {
+    var t = document.getElementById('toast');
+    t.textContent = msg;
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2200);
+  }
+
+  function show(id) {
+    ['state-loading', 'state-error'].forEach(function (s) {
+      document.getElementById(s).classList.remove('on');
+    });
+    if (id) document.getElementById(id).classList.add('on');
+    if (id === 'state-error') return;
+  }
+
+  // 无图时按品类生成色卡占位图
+  function placeholderImage(card) {
+    var palettes = {
+      '博物馆': ['#8b3a2b', '#d7a94c', '#f6ead2'],
+      '非遗': ['#1f6f5b', '#d6a84f', '#f2efe2'],
+      '国潮': ['#b22f2f', '#f0c35a', '#fff4dc'],
+      '文创IP': ['#2d5f8f', '#d6b15b', '#eef5f8'],
+      '节庆': ['#b64635', '#e5b45c', '#fff0d6']
+    };
+    var colors = palettes[card.cat] || ['#8b3a2b', '#d7a94c', '#f6ead2'];
+    var initials = (card.name || '文创').replace(/[·《》]/g, '').slice(0, 4);
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="520" height="320" viewBox="0 0 520 320">'
+      + '<defs><linearGradient id="g" x1="0" x2="1" y1="0" y2="1">'
+      + '<stop offset="0" stop-color="' + colors[0] + '"/><stop offset=".58" stop-color="' + colors[1] + '"/><stop offset="1" stop-color="' + colors[2] + '"/></linearGradient></defs>'
+      + '<rect width="520" height="320" rx="0" fill="url(#g)"/>'
+      + '<text x="50%" y="46%" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei, sans-serif" font-size="46" font-weight="800" fill="#fff">' + initials + '</text>'
+      + '<text x="50%" y="62%" text-anchor="middle" dominant-baseline="middle" font-family="Microsoft YaHei, sans-serif" font-size="18" fill="#fff" opacity=".86">' + (card.brand || '') + '</text>'
+      + '</svg>';
+    return 'data:image/svg+xml;charset=UTF-8,' + encodeURIComponent(svg);
+  }
+
+  function escHtml(s) {
+    return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) {
+      return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c];
+    });
+  }
+
+  function fill(id, text) {
+    var el = document.getElementById(id);
+    if (text) { el.textContent = text; return true; }
+    return false;
+  }
+
+  var TRANSPARENT_PX = 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7';
+
+  function setImgNote(text) {
+    var note = document.getElementById('c-imgnote');
+    if (!note) return;
+    if (text) { note.textContent = text; note.style.display = 'block'; }
+    else { note.style.display = 'none'; }
+  }
+
+  /* 主图策略：
+     1) 海报 / 普通图片地址 → 直接加载
+     2) 灵感卡的 AI 懒加载地址 → 先流光占位，轮询服务端直到生成完成
+     3) 全部失败 → 品类配色示意图（绝不显示破图） */
+  function renderHeroImage(card) {
+    var img = document.getElementById('c-img');
+    if (!img) return;
+    img.referrerPolicy = 'no-referrer';
+
+    var usePlaceholder = function () {
+      img.classList.remove('loading');
+      img.dataset.fbk = '1';
+      img.src = placeholderImage(card);
+      img.classList.add('ph');
+      setImgNote('示意图');
+    };
+    var applyReal = function (src, tag) {
+      img.classList.remove('loading', 'ph');
+      img.dataset.fbk = '0';
+      img.onerror = function () {
+        if (img.dataset.fbk === '1') return;
+        usePlaceholder();
+      };
+      img.src = src;
+      setImgNote(tag || '');
+    };
+
+    var poster = card.poster || '';
+    var raw = card.img || '';
+    var isLazyAi = raw.indexOf('/api/inspire/image') === 0;
+
+    if (poster) { applyReal(poster, 'AI 概念图'); return; }
+    if (raw && !isLazyAi) { applyReal(raw, '实拍'); return; }
+    if (!raw) { usePlaceholder(); return; }
+
+    // AI 概念图懒生成：占位 + 轮询（首次约 40~50s，之后走缓存秒开）
+    img.classList.add('loading');
+    img.src = TRANSPARENT_PX;
+    setImgNote('AI 概念图生成中');
+    var tries = 0, MAX_TRIES = 24;   // 5s × 24 ≈ 120s 上限
+    var fallback = function () {
+      if (card.img_fallback) applyReal(card.img_fallback, '示意图');
+      else usePlaceholder();
+    };
+    var probe = function () {
+      var sep = raw.indexOf('?') >= 0 ? '&' : '?';
+      fetch(raw + sep + 'fast=1&_r=' + tries, { cache: 'no-store' })
+        .then(function (r) {
+          if (r.headers.get('X-Inspire-Image') === 'ready') { applyReal(raw, 'AI 概念图'); return; }
+          throw new Error('pending');
+        })
+        .catch(function () {
+          if (++tries < MAX_TRIES) setTimeout(probe, 5000);
+          else fallback();
+        });
+    };
+    probe();
+  }
+
+  /* 把核心内容长文按 **粗体标题** 拆成「深入了解」的分段 */
+  function blocksFromStory(text) {
+    var raw = String(text || '').replace(/\r\n?/g, '\n').trim();
+    if (!raw) return [];
+    var lines = raw.split('\n');
+    var out = [], cur = null;
+    var isHead = function (s) {
+      s = s.trim();
+      if (!s || s.length > 40) return false;
+      if (/^\*\*.+\*\*[:：]?$/.test(s)) return true;
+      if (/^#{1,3}\s+\S/.test(s)) return true;
+      if (/^(第?[一二三四五六七八九十]+[、.．]|\d+[、.．])\s*\S{1,30}$/.test(s)) return true;
+      return false;
+    };
+    for (var i = 0; i < lines.length; i++) {
+      var line = lines[i];
+      if (isHead(line)) {
+        if (cur) out.push(cur);
+        cur = {
+          title: line.trim().replace(/^#+\s*/, '').replace(/\*\*/g, '').replace(/[:：]\s*$/, '').trim(),
+          body: []
+        };
+      } else if (cur) {
+        cur.body.push(line);
+      } else if (line.trim()) {
+        cur = { title: '简介', body: [line] };
+      }
+    }
+    if (cur) out.push(cur);
+    return out
+      .map(function (b) { return { title: b.title, body: b.body.join('\n').trim() }; })
+      .filter(function (b) { return b.body || b.title; });
+  }
+
+  function renderHighlights(card) {
+    var list = document.getElementById('c-highlights');
+    var items = (card.highlights || []).filter(function (t) { return !!t; });
+    if (!items.length || !list) return;
+    list.innerHTML = '';
+    items.forEach(function (text, i) {
+      var row = document.createElement('div');
+      row.className = 'hl-item';
+      var k = document.createElement('span');
+      k.className = 'k';
+      k.textContent = '0' + (i + 1);
+      var v = document.createElement('span');
+      v.textContent = text;
+      row.appendChild(k);
+      row.appendChild(v);
+      list.appendChild(row);
+    });
+    document.getElementById('sec-highlights').style.display = 'block';
+  }
+
+  /* 从 story 里挑出某个模块的正文（用于补齐名片板块，避免整篇塞入） */
+  function blockTextFromStory(text, titles) {
+    var blocks = blocksFromStory(text);
+    for (var i = 0; i < titles.length; i++) {
+      for (var j = 0; j < blocks.length; j++) {
+        if (String(blocks[j].title || '').indexOf(titles[i]) >= 0 && blocks[j].body) return blocks[j].body;
+      }
+    }
+    return '';
+  }
+
+  function renderDeep(card) {
+    var host = document.getElementById('c-deep');
+    var blocks = blocksFromStory(card.story);
+    if (!blocks.length || !host) return;
+    host.innerHTML = '';
+    blocks.forEach(function (b) {
+      var wrap = document.createElement('div');
+      wrap.className = 'deep-block';
+      var h = document.createElement('div');
+      h.className = 'deep-h';
+      h.textContent = b.title;
+      var p = document.createElement('div');
+      p.className = 'deep-p';
+      p.textContent = b.body;
+      wrap.appendChild(h);
+      if (b.body) wrap.appendChild(p);
+      host.appendChild(wrap);
+    });
+    document.getElementById('sec-deep').style.display = 'block';
+  }
+
+  function renderSource(card) {
+    var host = document.getElementById('c-source');
+    if (!host) return;
+    var bits = [];
+    if (card.cat) bits.push({ t: '分类 · ' + card.cat, href: '' });
+    if (card.brand) bits.push({ t: card.brand, href: '' });
+    if (card.source_url) bits.push({ t: '查看原始热点', href: card.source_url });
+    bits.push({ t: '同款检索', href: 'https://www.douyin.com/search/' + encodeURIComponent(card.name || '文创') });
+    if (!bits.length) return;
+    host.innerHTML = '';
+    bits.forEach(function (b) {
+      if (b.href) {
+        var a = document.createElement('a');
+        a.className = 'src-link';
+        a.href = b.href;
+        a.target = '_blank';
+        a.rel = 'noopener';
+        a.textContent = b.t;
+        host.appendChild(a);
+      } else {
+        var s = document.createElement('span');
+        s.className = 'src-chip';
+        s.textContent = b.t;
+        host.appendChild(s);
+      }
+    });
+    document.getElementById('sec-source').style.display = 'block';
+  }
+
+  function render(card) {
+    document.title = card.name + ' · 文创数字名片';
+
+    renderHeroImage(card);
+
+    fill('c-cat', card.cat || '文创');
+    fill('c-brand', card.brand);
+    fill('c-name', card.name);
+    fill('c-desc', card.desc);
+    renderHighlights(card);
+    renderDeep(card);
+
+    // 价格为空（灵感卡非实物）时显示提示文案，仍保留购买/检索入口
+    document.getElementById('c-buybar').style.display = 'flex';
+    if (card.price) {
+      document.getElementById('c-price').innerHTML = card.price + (card.sales ? '<small>' + card.sales + '</small>' : '');
+    } else {
+      document.getElementById('c-price').innerHTML = '<span style="font-size:13px;font-weight:600;color:var(--ink-subtle);border:1px dashed var(--rule);border-radius:6px;padding:3px 8px">非实物 · 仅供参考</span>';
+      document.getElementById('c-sales').textContent = card.sales || '';
+    }
+    var buy = document.getElementById('c-buy');
+    buy.href = card.booking_url || ('https://i.meituan.com/search/?w=' + encodeURIComponent(card.name));
+
+    // 顾客向板块：优先用名片自带字段；缺失时只取 story 里对应模块，
+    // 不再把整篇 story（可能是营销方案等运营内容）倒进「背后的文化故事」
+    var cultureText = card.culture || blockTextFromStory(card.story, ['文化内核', '文化背景', '文化故事', '背后的文化']);
+    if (fill('c-culture', cultureText)) document.getElementById('sec-culture').style.display = 'block';
+    var designText = card.design || blockTextFromStory(card.story, ['设计亮点', '设计与工艺', '设计理念', '工艺']);
+    if (fill('c-design', designText)) document.getElementById('sec-design').style.display = 'block';
+    if (fill('c-audience', card.audience)) document.getElementById('sec-audience').style.display = 'block';
+
+    var tags = card.tags || [];
+    if (tags.length) {
+      document.getElementById('c-tags').innerHTML = tags.map(function (t) {
+        return '<span class="tag">' + escHtml(t) + '</span>';
+      }).join('');
+    }
+
+    if (/MicroMessenger/i.test(navigator.userAgent)) {
+      document.getElementById('wechat-tip').style.display = 'block';
+    }
+
+    renderSource(card);
+
+    resolveShareUrl().then(function (u) {
+      shareUrl = u;
+      showLanTip(u);
+      renderQr();
+    });
+    document.getElementById('card-root').style.display = 'block';
+  }
+
+  // 本机地址已在脚本顶部判定，这里复用
+  var isLoopback = /^(127\.|localhost|\[::1\]|::1)/i.test(location.hostname);
+
+  function resolveShareUrl() {
+    if (!isLoopback) return Promise.resolve(location.href);
+    return fetch(API + '/api/network-info')
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        var ips = (d && d.lan_ips) || [];
+        if (!ips.length) return location.href;
+        var u = new URL(location.href);
+        u.hostname = ips[0];
+        return u.toString();
+      })
+      .catch(function () { return location.href; });
+  }
+
+  function showLanTip(url) {
+    var el = document.getElementById('qr-lan-tip');
+    if (!isLoopback || url === location.href) return;
+    el.innerHTML = '二维码已自动改用局域网地址 <b>' + new URL(url).host + '</b><br>请确保<b>手机与这台电脑连接同一 Wi-Fi</b>后再扫码（或把链接发到手机打开）。若需外网访问，请先在「设置 → 手机端访问」配置内网穿透。';
+    el.style.display = 'block';
+  }
+
+  function renderQr() {
+    var box = document.getElementById('qrcode');
+    box.innerHTML = '';
+    try {
+      new QRCode(box, {
+        text: shareUrl,
+        width: 112,
+        height: 112,
+        colorDark: '#2b2016',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.M
+      });
+      // qrcodejs 同步生成 canvas + img，取可下载的位图
+      setTimeout(function () {
+        var img = box.querySelector('img');
+        var canvas = box.querySelector('canvas');
+        var src = img && img.src ? img.src : (canvas ? canvas.toDataURL('image/png') : '');
+        if (src) document.getElementById('qr-download').href = src;
+      }, 60);
+    } catch (e) {
+      box.innerHTML = '<div style="font-size:12px;color:#999;padding:8px;line-height:1.6">二维码生成失败<br>请使用「复制名片链接」</div>';
+    }
+  }
+
+  if (!cid) { show('state-error'); return; }
+
+  fetch(API + '/api/cards/' + encodeURIComponent(cid))
+    .then(function (r) { return r.json().then(function (d) { return { ok: r.ok, d: d }; }); })
+    .then(function (res) {
+      if (!res.ok || !res.d.success || !res.d.card) { show('state-error'); return; }
+      render(res.d.card);
+    })
+    .catch(function () { show('state-error'); });
+})();
+
+function copyLink() {
+  var url = shareUrl || location.href;
+  navigator.clipboard.writeText(url).then(function () {
+    var t = document.getElementById('toast');
+    t.textContent = '链接已复制，去粘贴分享吧';
+    t.classList.add('show');
+    setTimeout(function () { t.classList.remove('show'); }, 2200);
+  });
+}
+function shareCard() {
+  var url = shareUrl || location.href;
+  if (navigator.share) {
+    navigator.share({ title: document.title, url: url }).catch(function () {});
+  } else {
+    copyLink();
+  }
+}
+</script>
+</body>
+</html>
